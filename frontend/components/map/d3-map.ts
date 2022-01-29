@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 import { feature } from 'topojson-client';
 import { MainTheme } from '../../styles/themes/MainTheme';
-// import places from "../Data/places.json";
+import topoJSONdata from './topo.json';
 
 export default class World {
 
@@ -47,36 +47,38 @@ export default class World {
             .attr('d', this.pathGenerator({type: "Sphere"}))
             .attr("fill", MainTheme.colours.ocean);
 
-        Promise.all([
-            d3.tsv('https://unpkg.com/world-atlas@1.1.4/world/50m.tsv'),
-            d3.json("https://gist.githubusercontent.com/mbostock/4090846/raw/d534aba169207548a8a3d670c9c2cc719ff05c47/world-50m.json")
-        ]).then(([tsvData, topoJSONdata]) => {
-            // Gets the country names with iso number
-            this.countryName = tsvData.reduce((accumulator, d) => {
-                accumulator[d.iso_n3] = d.name;
-                return accumulator;
-            }, {});
+         // Gets the country names with iso number
+         this.countryName = tsvData.reduce((accumulator, d) => {
+            accumulator[d.iso_n3] = d.name;
+            return accumulator;
+        }, {});
 
-            // Get the topoJSON country data
-            const countries: any = feature(topoJSONdata as any, (topoJSONdata as any).objects.countries);
+        // Get the topoJSON country data
+        const countries: any = feature(topoJSONdata as any, (topoJSONdata as any).objects.countries);
 
-            this.svgCountries = this.g
-                .append("g")
-                .selectAll('path')
-                .data(countries.features)
-                .enter()
-                .append('path')
-                .attr('d', this.pathGenerator)
-                .attr('class', 'country')
-                .attr('fill', 'rgb(32 35 35)')
-                .on("click", this.clicked);
+        this.svgCountries = this.g
+            .append("g")
+            .selectAll('path')
+            .data(countries.features)
+            .enter()
+            .append('path')
+            .attr('d', this.pathGenerator)
+            .attr('class', 'country')
+            .attr('fill', 'rgb(32 35 35)')
+            .on("click", this.clicked);
 
-            this.svgCountries
-                .append('title')
-                .text(d => this.countryName[d.id]);
+        this.svgCountries
+            .append('title')
+            .text(d => this.countryName[d.id]);
 
-            this.svg.call(this.zoom);
-        });
+        this.svg.call(this.zoom);
+
+        this.svgCountries               
+        .style('fill', (d) => {
+            return this.countryName[d.id] === 'Canada' ? 'blue' : 'red';
+        })
+
+        this.render({});
     }
 
     private reset = () => {
@@ -110,10 +112,7 @@ export default class World {
     }
 
     render(data: any) {
-        this.svgCountries               
-            .style('fill', (d) => {
-                return this.countryName[d.id] === 'Canada' ? 'blue' : 'red';
-            })
+
     }
 }
 
