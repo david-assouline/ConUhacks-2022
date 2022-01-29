@@ -16,7 +16,8 @@ export const MainTheme: DefaultTheme = {
         },
         toolOverlay: {
             backgroundColor: 'white',
-            color: 'black'
+            color: '#a1a1a1',
+            hover: '#4285f4'
         }
      }
 }
