@@ -7,13 +7,12 @@ import { Layers } from "./Layers";
 const Map = () => {
     useEffect(() => {
         new World();
-        console.log("in world");
-
     }, []);
 
     return <>
-        <WorldMapStyles id="WorldMap"></WorldMapStyles>
-        <Layers/>
+        <WorldMapStyles id="WorldMap">
+            <Layers/>
+        </WorldMapStyles>
     </>
 }
 
@@ -21,6 +20,8 @@ const WorldMapStyles = styled.div`
     align-items: center;
     display: flex;
     height: 100%;
+    max-width: calc(100vw);
+    max-height: calc(100vh);
     justify-content: center;
     position: relative;
     overflow: hidden!important;

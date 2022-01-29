@@ -8,6 +8,7 @@ export default class World {
     // Keep the constant height and width of the map
     private width = 960;
     private height = 500;
+    private minScale = "translate(43.34065246582031,30.19293518066405) scale(0.9)";
 
     // SVG elements in their nested order
     private svg: any;
@@ -29,7 +30,7 @@ export default class World {
         this.pathGenerator = d3.geoPath().projection(this.projection);
 
         this.zoom = d3.zoom()
-            .scaleExtent([1, 30])
+            .scaleExtent([0.9, 30])
             .on("zoom", this.zoomed);
 
         this.svg = d3.select("#WorldMap")
@@ -40,17 +41,21 @@ export default class World {
             .attr("height", "100%")
             .on("click", this.reset);
 
-        this.g = this.svg.append("g");
+        this.g = this.svg
+            .append("g")
+            .attr("transform", this.minScale);
 
         this.g
             .append('path')
-            .attr('d', this.pathGenerator({type: "Sphere"}))
+            .attr('d', this.pathGenerator({ type: "Sphere" }))
             .attr("fill", MainTheme.colours.ocean);
 
         Promise.all([
             d3.tsv('https://unpkg.com/world-atlas@1.1.4/world/50m.tsv'),
-            d3.json("https://gist.githubusercontent.com/mbostock/4090846/raw/d534aba169207548a8a3d670c9c2cc719ff05c47/world-50m.json")
+            d3.json("https://unpkg.com/world-atlas@1.1.4/world/50m.json")
         ]).then(([tsvData, topoJSONdata]) => {
+            console.log(tsvData);
+            
             // Gets the country names with iso number
             this.countryName = tsvData.reduce((accumulator, d) => {
                 accumulator[d.iso_n3] = d.name;
@@ -85,13 +90,14 @@ export default class World {
             this.zoom.transform,
             d3.zoomIdentity,
             d3.zoomTransform(this.svg.node()).invert([this.width / 2, this.height / 2])
-        );
+        ).end().then(() =>
+            this.g.attr("transform", this.minScale));
     }
 
     private zoomed = (event: any) => {
         const { transform } = event;
         this.g.attr("transform", transform);
-        // this.g.attr("stroke-width", 1 / transform.k);
+        this.g.attr("stroke-width", 1 / transform.k);
     }
 
     private clicked = (event, d) => {
@@ -110,7 +116,7 @@ export default class World {
     }
 
     render(data: any) {
-        this.svgCountries               
+        this.svgCountries
             .style('fill', (d) => {
                 return this.countryName[d.id] === 'Canada' ? 'blue' : 'red';
             })
