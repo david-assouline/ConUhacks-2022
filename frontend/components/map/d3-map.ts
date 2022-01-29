@@ -13,15 +13,9 @@ export default class World {
         this.projection = d3.geoNaturalEarth1();
         this.pathGenerator = d3.geoPath().projection(this.projection);
 
-        // let zoom: any = d3.zoom()
-        //     .scaleExtent([0.9, 25])
-        //     .on("zoom", () => {
-        //         // @ts-ignore
-        //         this.svg.attr("transform", d3.event.transform);
-        //         // @ts-ignore
-        //         let k = d3.event.transform.k;
-        //         let dim = Math.floor(10 / Math.sqrt(k)) - 1;
-        //     });
+        let zoom: any = d3.zoom().on('zoom', (event: any) => {
+            this.svg.attr('transform', event.transform);
+        });
 
         this.svg = d3.select("#WorldMap")
             .append("svg")
@@ -30,13 +24,43 @@ export default class World {
             .attr("width", "100%")
             .attr("height", "100%")
             .append("g")
-            // .call(zoom)
-            // .append("g");
+            .call(zoom);
 
-        d3.json("https://gist.githubusercontent.com/mbostock/4090846/raw/d534aba169207548a8a3d670c9c2cc719ff05c47/world-50m.json")
-            .then(((data: any) => {
-                this.render(feature(data, data.objects.countries));
-            }));
+        // d3.json("topo.json")
+        //     .then(((data: any) => {
+        //         this.render(feature(data, data.objects.countries));
+        //     }));
+
+        Promise.all([
+            d3.tsv('https://unpkg.com/world-atlas@1.1.4/world/50m.tsv'),
+            d3.json('https://unpkg.com/world-atlas@1.1.4/world/50m.json')
+          ]).then(([tsvData, topoJSONdata]) => {
+            
+            const countryName = tsvData.reduce((accumulator, d) => {
+              accumulator[d.iso_n3] = d.name;
+              return accumulator;
+            }, {});
+            
+            /*
+            const countryName = {};
+            tsvData.forEach(d => {
+              countryName[d.iso_n3] = d.name;
+            });
+            */
+            
+            const countries: any = feature(topoJSONdata as any, (topoJSONdata as any).objects.countries);
+            this.svg.selectAll('path').data(countries.features)
+              .enter().append('path')
+                .attr('class', 'country')
+                .attr('d', this.pathGenerator)
+                    .attr('fill', (d) => {
+                          console.log(countryName);
+                          return countryName[d.id] === 'Canada' ? 'pink' : 'blue';
+                    })
+              .append('title')
+                .text(d => countryName[d.id]);
+            
+          });
     }
     render(data: any) {
         this.svg.append('path')
@@ -49,3 +73,4 @@ export default class World {
             .attr('d', this.pathGenerator);
     }
 }
+

@@ -20,9 +20,15 @@ const WorldMapStyles = styled.div`
     position: relative;
     overflow: hidden!important;
 
+    > .country {
+        /*   fill: lightgreen; */
+        stroke: black;
+        stroke-width: 0.05px;
+    }
+
     > * {
         fill: #17ff02;
-        stroke: #000000;
+        stroke: #ffffff;
         stroke-opacity: 1;
         stroke-width: 0.15px;
     }
