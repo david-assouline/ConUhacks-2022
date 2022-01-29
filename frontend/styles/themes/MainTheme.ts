@@ -8,11 +8,15 @@ export const MainTheme: DefaultTheme = {
         borders: 'yellow',
         ocean: 'orange',
         legend: {
-            color1: '#ffffff',
-            color2: '#c5c5c5',
-            color3: '#8d8d8d',
-            color4: '#8d8d8d',
-            color5: '#8d8d8d'
+            color1: '#84ca50',
+            color2: '#45b050',
+            color3: '#f07d02',
+            color4: '#e60000',
+            color5: '#9e1313'
+        },
+        toolOverlay: {
+            backgroundColor: 'white',
+            color: 'black'
         }
      }
 }

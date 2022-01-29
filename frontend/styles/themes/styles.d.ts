@@ -15,6 +15,10 @@ declare module 'styled-components' {
             color4: string,
             color5: string
           }
+          toolOverlay: {
+            backgroundColor: string,
+            color: string
+          }
         }
     }
 }
