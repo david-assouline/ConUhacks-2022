@@ -14,10 +14,17 @@ const Map = () => {
         }
     });
 
+    const [world, setWorld] = useState<any>(null);
+
     useEffect(() => {
-        new World();
-        // w.render(data);
+        if (world === null)
+            setWorld(new World());
     }, []);
+
+    useEffect(() => {
+        if (world && data)
+            world.render(data)
+    }, [data.data, world])
 
     return <>
         <WorldMapStyles id="WorldMap">
@@ -40,6 +47,7 @@ const WorldMapStyles = styled.div`
     & .country {
         fill: ${props => props.theme.colours.country};
         stroke: ${props => props.theme.colours.borders};
+        stroke-width: 0.3px;
     }
 `
 
