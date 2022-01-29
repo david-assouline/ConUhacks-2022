@@ -2,6 +2,7 @@ from flask import Flask
 from flask_cors import CORS
 from scraper_wikipedia import scrape, scrape_by_url
 from wiki import query_search_string, generate_wiki_page_url, fetch_html_content
+import requests
 
 app = Flask(__name__)
 CORS(app)
@@ -12,7 +13,26 @@ def helloWorld():
 
 @app.route('/v1/query',  methods=['GET'])
 def query():
-    return 
+    query = requests.args.get('query')
+
+    return {
+    "version": "1",
+    "resultSuccess": True,
+    "query": "",  
+    "suggestions": [
+
+    ],
+    "filter": ['f1', 'f2'],
+    "data": {
+        "CA": {
+            "f1": 10,
+            "f2": 300
+        },
+        "US": {
+            
+        },
+    }
+}
 
 @app.route("/testWiki")
 def test_wiki_scrape():

@@ -11,7 +11,7 @@ def set_user_agent(requests):
     headers = requests.utils.default_headers()
     headers.update(
         {
-            'User-Agent': 'My User Agent 1.0',
+            'User-Agent': 'MuckMuckGo python',
         }
     )
 
