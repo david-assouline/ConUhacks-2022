@@ -16,3 +16,5 @@ main_table = soup.find('table', {'class': "wikitable"})
 df = pd.read_html(str(main_table))
 
 df = pd.DataFrame(df[0])
+print(df.head())
+
