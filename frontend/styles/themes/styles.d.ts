@@ -17,7 +17,8 @@ declare module 'styled-components' {
           }
           toolOverlay: {
             backgroundColor: string,
-            color: string
+            color: string,
+            hover: string
           }
         }
     }

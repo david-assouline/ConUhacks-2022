@@ -5,8 +5,8 @@ export const MainTheme: DefaultTheme = {
         country: 'lightgreen',
         countryClick: 'red',
         hoverCountry: 'pink',
-        borders: 'yellow',
-        ocean: 'orange',
+        borders: 'black',
+        ocean: '#8ab4f8',
         legend: {
             color1: '#84ca50',
             color2: '#45b050',
@@ -16,7 +16,8 @@ export const MainTheme: DefaultTheme = {
         },
         toolOverlay: {
             backgroundColor: 'white',
-            color: 'black'
+            color: '#a1a1a1',
+            hover: '#4285f4'
         }
      }
 }

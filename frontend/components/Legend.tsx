@@ -20,6 +20,7 @@ const Container = styled.div`
     border-radius: 8px;
     bottom: 33px;
     box-shadow: 0 1px 4px rgb(0 0 0 / 30%);
+    color: ${props => props.theme.colours.toolOverlay.color};
     display: flex;
     height: 36px;
     left: calc(50% - 100px);
