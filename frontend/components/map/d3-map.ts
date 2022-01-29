@@ -9,7 +9,6 @@ export default class World {
     // Keep the constant height and width of the map
     private width = 960;
     private height = 500;
-    private minScale = "translate(43.34065246582031,30.19293518066405) scale(0.9)";
 
     // SVG elements in their nested order
     private svg: any;
@@ -27,11 +26,12 @@ export default class World {
 
     constructor() {
         //this.projection = d3.geoOrthographic();
-        this.projection = d3.geoNaturalEarth1();
+        // this.projection = d3.geoNaturalEarth1();
+        this.projection = d3.geoEquirectangular();
         this.pathGenerator = d3.geoPath().projection(this.projection);
 
         this.zoom = d3.zoom()
-            .scaleExtent([0.9, 30])
+            .scaleExtent([1, 30])
             .on("zoom", this.zoomed);
 
         this.svg = d3.select("#WorldMap")
@@ -43,8 +43,7 @@ export default class World {
             .on("click", this.reset);
 
         this.g = this.svg
-            .append("g")
-            .attr("transform", this.minScale);
+            .append("g");
 
         this.g
             .append('path')
@@ -83,8 +82,7 @@ export default class World {
             this.zoom.transform,
             d3.zoomIdentity,
             d3.zoomTransform(this.svg.node()).invert([this.width / 2, this.height / 2])
-        ).end().then(() =>
-            this.g.transition().duration(200).attr("transform", this.minScale));
+        );
     }
 
     private zoomed = (event: any) => {
