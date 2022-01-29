@@ -7,6 +7,14 @@ S = requests.Session()
 
 URL = "https://en.wikipedia.org/w/api.php"
 
+def set_user_agent(requests):
+    headers = requests.utils.default_headers()
+    headers.update(
+        {
+            'User-Agent': 'My User Agent 1.0',
+        }
+    )
+
 def query_search_string(query_string):
     PARAMS = {
         "action": "query",
@@ -40,8 +48,10 @@ def fetch_page_content(page_title):
     R = S.get(url=URL, params=PARAMS)
     DATA = R.json()
 
+
 def generate_wiki_page_url(pageid):
     return "https://en.wikipedia.org/?curid={pageid}".format(pageid)
+
 
 def query_page_with_table(query_string):
     PARAMS = {
