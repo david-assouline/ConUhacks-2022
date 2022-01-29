@@ -14,7 +14,7 @@ export const LayersTool = () => {
             <IconLayerWrapper>
                 <LayerIcon />
             </IconLayerWrapper>
-            {showLayers && <LayersContainer layers={layers} />}
+            { <LayersContainer layers={layers} />}
         </LayerWrapper>
     );
 }
@@ -24,20 +24,24 @@ const LayerWrapper = styled.div`
     bottom: 15px;
     left: 15px;
     display: flex;
+    column-gap: 10px;
 
-    > div {   
+    > div {
         &:hover {
-            border: 3px solid grey;
-            border-radius: 5px;
+            border-color: grey;
+            cursor: pointer;
         }
     }
 `
 
 const IconLayerWrapper = styled.div`
-    height: 50px;
-    width: 50px;
+    height: 75px;
+    width: 75px;
     display: flex;
+    flex-direction: row;
     align-items: center;
     justify-content: center;
-    margin-right: 15px;
+    
+    border: 3px solid transparent;
+    border-radius: 5px;
 `

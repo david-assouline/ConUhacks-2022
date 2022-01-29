@@ -6,13 +6,16 @@ interface IProps {
 
 export const Layer = (props: IProps) => {
     return <LayerContainer>
-        <img height="50px" width="50px" src={props.imagePath} alt={`Layer ${props.imagePath}`} />
+        <img height="48px" width="48px" src={props.imagePath} alt={`Layer ${props.imagePath}`} />
     </LayerContainer>
 }
 
 const LayerContainer = styled.div`
-    height: 50;
-    width: 50px;
-    margin-right: 10px;
     border-radius: 5px;
+    border: 3px solid transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 75px;
+    width: 75px;
 `
