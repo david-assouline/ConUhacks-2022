@@ -1,4 +1,5 @@
 import { Layer } from "./Layer";
+import styled from "styled-components";
 
 interface IProps {
     layers: string[]

@@ -24,7 +24,7 @@ const LayerWrapper = styled.div`
     bottom: 15px;
     left: 15px;
     display: flex;
-    column-gap: 10px;
+    column-gap: 5px;
 
     > div {
         &:hover {
