@@ -68,7 +68,6 @@ export default class World {
             .append('path')
             .attr('d', this.pathGenerator)
             .attr('class', 'country')
-            .attr('fill', 'rgb(32 35 35)')
             .on("click", this.clicked);
 
         this.svgCountries
