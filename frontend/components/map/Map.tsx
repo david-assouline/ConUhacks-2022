@@ -1,17 +1,20 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
 import World from "./d3-map";
+import { Layers } from "./Layers";
+
 
 const Map = () => {
     useEffect(() => {
         new World();
+        console.log("in world");
+
     }, []);
 
-    return (
-        <div>
-            <WorldMapStyles id="WorldMap"></WorldMapStyles>
-        </div>
-    )
+    return <>
+        <WorldMapStyles id="WorldMap"></WorldMapStyles>
+        <Layers/>
+    </>
 }
 
 const WorldMapStyles = styled.div`
