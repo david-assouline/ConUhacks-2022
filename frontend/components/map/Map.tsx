@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import World from "./d3-map";
 import { Layers } from "../Layers";
+import World from "./d3-map";
 
 
 const Map = () => {
