@@ -13,16 +13,15 @@ export default class World {
         this.projection = d3.geoNaturalEarth1();
         this.pathGenerator = d3.geoPath().projection(this.projection);
 
-        let zoom: any = d3.zoom()
-            .scaleExtent([0.9, 25])
-            .on("zoom", () => {
-                // @ts-ignore
-                this.svg.attr("transform", d3.event.transform);
-                // @ts-ignore
-                let k = d3.event.transform.k;
-                let dim = Math.floor(10 / Math.sqrt(k)) - 1;
-                this.svg.selectAll(".pin").attr("height", dim + "px").attr("width", dim + "px").attr("transform", "translate(0, -" + dim + ")");
-            });
+        // let zoom: any = d3.zoom()
+        //     .scaleExtent([0.9, 25])
+        //     .on("zoom", () => {
+        //         // @ts-ignore
+        //         this.svg.attr("transform", d3.event.transform);
+        //         // @ts-ignore
+        //         let k = d3.event.transform.k;
+        //         let dim = Math.floor(10 / Math.sqrt(k)) - 1;
+        //     });
 
         this.svg = d3.select("#WorldMap")
             .append("svg")
@@ -31,8 +30,8 @@ export default class World {
             .attr("width", "100%")
             .attr("height", "100%")
             .append("g")
-            .call(zoom)
-            .append("g");
+            // .call(zoom)
+            // .append("g");
 
         d3.json("https://gist.githubusercontent.com/mbostock/4090846/raw/d534aba169207548a8a3d670c9c2cc719ff05c47/world-50m.json")
             .then(((data: any) => {
