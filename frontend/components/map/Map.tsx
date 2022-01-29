@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { Layers } from "../Layers";
+import { LayersTool } from "../LayersTool";
 import { Legend } from "../Legend";
 import { SearchBar } from "../SearchBar";
 import World from "./d3-map";
@@ -31,7 +31,7 @@ const Map = () => {
     return <>
         <WorldMapStyles id="WorldMap">
             <SearchBar/>
-            <Layers/>
+            <LayersTool/>
             <Legend/>
         </WorldMapStyles>
     </>
@@ -46,7 +46,6 @@ const WorldMapStyles = styled.div`
     justify-content: center;
     position: relative;
     overflow: hidden!important;
-
 
     & .country {
         fill: ${props => props.theme.colours.country};

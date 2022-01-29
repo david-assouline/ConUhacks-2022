@@ -1,28 +1,18 @@
 import styled from "styled-components";
 
-export const Layer = (props: any) => {
-    const image = props.image;
-    return (
-        <LayerWrapper>
-            {/* <LayerContainer background={image} /> */}
-        </LayerWrapper>
-    );
+interface IProps {
+    imagePath: string;
 }
 
-const LayerWrapper = styled.div`
-    height: 100px;
-    width: 100px;
-    position: absolute;
-    background-color: grey;
-    bottom: 15px;
-    left: 15px;
-`
+export const Layer = (props: IProps) => {
+    return <LayerContainer>
+        <img height="50px" width="50px" src={props.imagePath} alt={`Layer ${props.imagePath}`} />
+    </LayerContainer>
+}
 
-const LayerContainer = styled.div<{ background: any }>`
-    background-image: ${props => props.background};
-    width: 100px;
-    height: 100px;
-    & :hover {
-        border: 1em solid grey;
-    }
+const LayerContainer = styled.div`
+    height: 50;
+    width: 50px;
+    margin-right: 10px;
+    border-radius: 5px;
 `
