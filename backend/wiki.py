@@ -50,8 +50,7 @@ def fetch_page_content(page_title):
 
 
 def generate_wiki_page_url(pageid):
-    return "https://en.wikipedia.org/?curid={pageid}".format(pageid)
-
+    return "https://en.wikipedia.org/?curid={pageid}".format(pageid=pageid)
 
 def query_page_with_table(query_string):
     PARAMS = {
@@ -64,6 +63,21 @@ def query_page_with_table(query_string):
     R = S.get(url=URL, params=PARAMS)
     DATA = R.json()
     print(DATA)
+
+
+def fetch_html_content(pageid):
+    PARAMS = {
+        'action': 'parse',
+        'origin': '*',
+        'pageid': pageid,
+        'format': 'json'
+    }
+    R = S.get(url=URL, params=PARAMS)
+    DATA = R.json()
+    if DATA and DATA["parse"] and DATA["parse"]["text"]:
+        return DATA["parse"]["text"]["*"]
+
+    return ""
 
 if __name__ == '__main__':
     print(query_search_string("chess grandmasters"))
