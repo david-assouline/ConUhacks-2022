@@ -2,10 +2,13 @@ import requests
 from bs4 import BeautifulSoup
 import pandas as pd
 
-wikiurl = "https://en.wikipedia.org/wiki/List_of_chess_grandmasters"
+# URL for scrapping data
+wikiurl = input("Enter URL: ")
+
 table_class = "wikitable sortable jquery-tablesorter"
 response = requests.get(wikiurl)
 
+# parse HTML from URL
 soup = BeautifulSoup(response.text, 'html.parser')
 main_table = soup.find('table', {'class': "wikitable"})
 
