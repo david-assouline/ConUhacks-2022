@@ -1,72 +1,52 @@
-import d3 from "d3";
-import * as topojson from "topojson-client";
+import * as d3 from 'd3';
+import {feature} from 'topojson-client';
+// import places from "../Data/places.json";
 
-export class World {
-    private width = 975;
-    private height = 610;
+export default class World {
 
-    stuff = (id: string) => {
-        const zoom = d3.zoom()
-            .scaleExtent([1, 8])
-            .on("zoom", zoomed);
-    
-        const svg = d3.create("svg")
-            .attr("viewBox", [0, 0, this.width, this.height])
-            .on("click", () => console.log("test"));
-    
-        const g = svg.append("g");
-    
-        // const states = g.append("g")
-        //     .attr("fill", "#444")
-        //     .attr("cursor", "pointer")
-        // .selectAll("path")
-        // .data(topojson.feature(us, us.objects.states).features)
-        // .join("path")
-        //     .on("click", clicked)
-        //     .attr("d", path);
-        
-        // states.append("title")
-        //     .text(d => d.properties.name);
-    
-        // g.append("path")
-        //     .attr("fill", "none")
-        //     .attr("stroke", "white")
-        //     .attr("stroke-linejoin", "round")
-        //     .attr("d", path(topojson.mesh(us, us.objects.states, (a, b) => a !== b)));
-    
-        // svg.call(zoom);
-    
-        // function reset() {
-        // states.transition().style("fill", null);
-        // svg.transition().duration(750).call(
-        //     zoom.transform,
-        //     d3.zoomIdentity,
-        //     d3.zoomTransform(svg.node()).invert([width / 2, height / 2])
-        // );
-        // }
-    
-        // function clicked(event, d) {
-        // const [[x0, y0], [x1, y1]] = path.bounds(d);
-        // event.stopPropagation();
-        // states.transition().style("fill", null);
-        // d3.select(this).transition().style("fill", "red");
-        // svg.transition().duration(750).call(
-        //     zoom.transform,
-        //     d3.zoomIdentity
-        //     .translate(width / 2, height / 2)
-        //     .scale(Math.min(8, 0.9 / Math.max((x1 - x0) / width, (y1 - y0) / height)))
-        //     .translate(-(x0 + x1) / 2, -(y0 + y1) / 2),
-        //     d3.pointer(event, svg.node())
-        // );
-        // }
-    
-        function zoomed(event) {
-        const {transform} = event;
-        g.attr("transform", transform);
-        g.attr("stroke-width", 1 / transform.k);
-        }
-    
-        return svg.node();
+    private svg: any;
+    private projection: d3.GeoProjection;
+    private pathGenerator: any;
+
+    constructor() {
+        // this.projection = d3.geoOrthographic();
+        this.projection = d3.geoNaturalEarth1();
+        this.pathGenerator = d3.geoPath().projection(this.projection);
+
+        let zoom: any = d3.zoom()
+        .scaleExtent([0.9, 25])
+        .on("zoom", () => {
+            // @ts-ignore
+            this.svg.attr("transform", d3.event.transform);
+            // @ts-ignore
+            let k = d3.event.transform.k;
+            let dim = Math.floor(10 / Math.sqrt(k)) - 1;  
+            this.svg.selectAll(".pin").attr("height", dim + "px").attr("width", dim + "px").attr("transform", "translate(0, -" + dim + ")");
+        });
+
+        this.svg = d3.select("#WorldMap")
+                    .append("svg")
+                    .attr("viewBox", "0 0 960 500")
+                    .attr("max-width", "100%")
+                    .attr("width", "100%")
+                    .attr("height", "100%")
+                    .append("g")
+                    .call(zoom)
+                    .append("g");
+
+        d3.json("https://gist.githubusercontent.com/mbostock/4090846/raw/d534aba169207548a8a3d670c9c2cc719ff05c47/world-50m.json")
+            .then(((data: any) => {
+                this.render(feature(data, data.objects.countries));
+            }));
     }
+    render(data: any) {
+        // this.svg.append('path')
+        //     .attr('d', this.pathGenerator({type: "Sphere"}))
+        //     .attr("fill", "rgb(32 33 35)");
 
+        // this.svg.selectAll('path')
+        //     .data(data.features)
+        //     .enter().append('path')
+        //     .attr('d', this.pathGenerator);
+    }
 }
