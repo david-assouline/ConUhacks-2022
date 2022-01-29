@@ -5,6 +5,8 @@ import World from "./d3-map";
 const Map = () => {
     useEffect(() => {
         new World();
+        console.log("in world");
+        
     }, []);
 
     return <WorldMapStyles id="WorldMap"></WorldMapStyles>
@@ -19,8 +21,8 @@ const WorldMapStyles = styled.div`
     overflow: hidden!important;
 
     > * {
-        fill: #878787;
-        stroke: #595959;
+        fill: #17ff02;
+        stroke: #000000;
         stroke-opacity: 1;
         stroke-width: 0.15px;
     }
