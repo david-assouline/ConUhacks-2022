@@ -76,23 +76,16 @@ export default class World {
             .text(d => this.countryName[d.id]);
 
         this.svg.call(this.zoom);
-
-        this.svgCountries               
-        .style('fill', (d) => {
-            return this.countryName[d.id] === 'Canada' ? 'blue' : 'red';
-        })
-
-        this.render({});
     }
 
     private reset = () => {
-        this.svgCountries.transition().style("fill", null);
+        // this.svgCountries.transition().style("fill", null);
         this.svg.transition().duration(750).call(
             this.zoom.transform,
             d3.zoomIdentity,
             d3.zoomTransform(this.svg.node()).invert([this.width / 2, this.height / 2])
         ).end().then(() =>
-            this.g.attr("transform", this.minScale));
+            this.g.transition().duration(200).attr("transform", this.minScale));
     }
 
     private zoomed = (event: any) => {
@@ -104,8 +97,8 @@ export default class World {
     private clicked = (event, d) => {
         const [[x0, y0], [x1, y1]] = this.pathGenerator.bounds(d);
         event.stopPropagation();
-        this.svgCountries.transition().style("fill", null);
-        d3.select(event.srcElement).transition().style("fill", "red");
+        //this.svgCountries.transition().style("fill", null);
+        //d3.select(event.srcElement).transition().style("fill", "red");
         this.svg.transition().duration(750).call(
             this.zoom.transform,
             d3.zoomIdentity
@@ -117,9 +110,16 @@ export default class World {
     }
 
     render(data: any) {
+        const {color1, color2, color3, color4, color5} = MainTheme.colours.legend;
+
+        var colors = d3.scaleQuantize()
+        .domain([0, 100])
+        //@ts-ignore
+        .range([color1, color2, color3, color4, color5]);
+
         this.svgCountries
             .style('fill', (d) => {
-                return this.countryName[d.id] === 'Canada' ? 'blue' : 'red';
+                return colors(Math.random()* (100));
             })
     }
 }
