@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { LayersTool } from "../LayersTool";
+import { Legend } from "../Legend";
 import World from "./d3-map";
 
 
@@ -29,6 +30,7 @@ const Map = () => {
     return <>
         <WorldMapStyles id="WorldMap">
             <LayersTool/>
+            <Legend />
         </WorldMapStyles>
     </>
 }
