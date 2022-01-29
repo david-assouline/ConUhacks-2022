@@ -1,29 +1,35 @@
 import * as d3 from 'd3';
 import { feature } from 'topojson-client';
+import { MainTheme } from '../../styles/themes/MainTheme';
 // import places from "../Data/places.json";
 
 export default class World {
 
+    // Keep the constant height and width of the map
     private width = 960;
     private height = 500;
 
-    // Order of the data
+    // SVG elements in their nested order
     private svg: any;
     private g: any;
     private svgCountries: any;
 
+    // Projections used to display the map
     private projection: d3.GeoProjection;
     private pathGenerator: any;
+
+    // All the fetched country name data
+    private countryName: any;
 
     private zoom: any;
 
     constructor() {
-        // this.projection = d3.geoOrthographic();
+        //this.projection = d3.geoOrthographic();
         this.projection = d3.geoNaturalEarth1();
         this.pathGenerator = d3.geoPath().projection(this.projection);
 
         this.zoom = d3.zoom()
-            .scaleExtent([1, 8])
+            .scaleExtent([1, 30])
             .on("zoom", this.zoomed);
 
         this.svg = d3.select("#WorldMap")
@@ -36,12 +42,17 @@ export default class World {
 
         this.g = this.svg.append("g");
 
+        this.g
+            .append('path')
+            .attr('d', this.pathGenerator({type: "Sphere"}))
+            .attr("fill", MainTheme.colours.ocean);
+
         Promise.all([
             d3.tsv('https://unpkg.com/world-atlas@1.1.4/world/50m.tsv'),
-            d3.json('https://unpkg.com/world-atlas@1.1.4/world/50m.json')
+            d3.json("https://gist.githubusercontent.com/mbostock/4090846/raw/d534aba169207548a8a3d670c9c2cc719ff05c47/world-50m.json")
         ]).then(([tsvData, topoJSONdata]) => {
             // Gets the country names with iso number
-            const countryName = tsvData.reduce((accumulator, d) => {
+            this.countryName = tsvData.reduce((accumulator, d) => {
                 accumulator[d.iso_n3] = d.name;
                 return accumulator;
             }, {});
@@ -49,26 +60,22 @@ export default class World {
             // Get the topoJSON country data
             const countries: any = feature(topoJSONdata as any, (topoJSONdata as any).objects.countries);
 
-            // 
             this.svgCountries = this.g
                 .append("g")
                 .selectAll('path')
                 .data(countries.features)
                 .enter()
                 .append('path')
-                .attr('class', 'country')
                 .attr('d', this.pathGenerator)
-                .attr('fill', (d) => {
-                    return countryName[d.id] === 'Canada' ? 'pink' : 'blue';
-                })
+                .attr('class', 'country')
+                .attr('fill', 'rgb(32 35 35)')
                 .on("click", this.clicked);
 
             this.svgCountries
                 .append('title')
-                .text(d => countryName[d.id]);
+                .text(d => this.countryName[d.id]);
 
             this.svg.call(this.zoom);
-
         });
     }
 
@@ -88,10 +95,9 @@ export default class World {
     }
 
     private clicked = (event, d) => {
-        console.log(d, event);
         const [[x0, y0], [x1, y1]] = this.pathGenerator.bounds(d);
         event.stopPropagation();
-        this.svg.transition().style("fill", null);
+        this.svgCountries.transition().style("fill", null);
         d3.select(event.srcElement).transition().style("fill", "red");
         this.svg.transition().duration(750).call(
             this.zoom.transform,
@@ -104,14 +110,10 @@ export default class World {
     }
 
     render(data: any) {
-        this.svg.append('path')
-            .attr('d', this.pathGenerator({ type: "Sphere" }))
-            .attr("fill", "rgb(32 33 35)");
-
-        this.svg.selectAll('path')
-            .data(data.features)
-            .enter().append('path')
-            .attr('d', this.pathGenerator);
+        this.svgCountries               
+            .style('fill', (d) => {
+                return this.countryName[d.id] === 'Canada' ? 'blue' : 'red';
+            })
     }
 }
 

@@ -5,11 +5,13 @@ import World from "./d3-map";
 const Map = () => {
     useEffect(() => {
         new World();
-        console.log("in world");
-        
     }, []);
 
-    return <WorldMapStyles id="WorldMap"></WorldMapStyles>
+    return (
+        <div>
+            <WorldMapStyles id="WorldMap"></WorldMapStyles>
+        </div>
+    )
 }
 
 const WorldMapStyles = styled.div`
@@ -20,17 +22,10 @@ const WorldMapStyles = styled.div`
     position: relative;
     overflow: hidden!important;
 
-    > .country {
-        /*   fill: lightgreen; */
-        stroke: black;
-        stroke-width: 0.05px;
-    }
 
-    > * {
-        fill: #17ff02;
-        stroke: #ffffff;
-        stroke-opacity: 1;
-        stroke-width: 0.15px;
+    & .country {
+        fill: ${props => props.theme.colours.country};
+        stroke: ${props => props.theme.colours.borders};
     }
 `
 
