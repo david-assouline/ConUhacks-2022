@@ -1,12 +1,22 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import World from "./d3-map";
 import { Layers } from "../Layers";
+import World from "./d3-map";
 
 
 const Map = () => {
+    const [data, setData] = useState<ApiResponse>({
+        filters: ['Filter 1', 'Filter 2'],
+        data: {
+            "Canada": {
+                "f1": 2
+            }
+        }
+    });
+
     useEffect(() => {
         new World();
+        // w.render(data);
     }, []);
 
     return <>

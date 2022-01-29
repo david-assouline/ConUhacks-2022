@@ -17,7 +17,3 @@ export default function Index() {
 		</div>
 	)
 }
-
-const Temp = styled.div`
-	color: red;
-`
