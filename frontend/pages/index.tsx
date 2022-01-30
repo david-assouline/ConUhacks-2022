@@ -1,17 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Head from 'next/head';
-import styled from 'styled-components';
-import Map from '../components/map/Map';
+import Map from "../components/map/Map"
+import HomePage from '../components/HomePage';
 
 
 export default function Index() {
+	const [initialSearch, setIS] = useState<string>(null);
 	return (
 		<div>
 			<Head>
-				<title>MuckMuckGo!!!</title>
+				<title>MuckMuckGo</title>
 			</Head>	
 			<div>	
-				<Map/>
+				{initialSearch ? 
+					<Map
+						initialSearch={initialSearch}
+					/>  
+					: 
+					<HomePage
+						setIS={setIS}//Covid-19 pandemic by country
+					/>}
 			</div>
 			
 		</div>

@@ -107,8 +107,6 @@ export default class WorldSphere {
 
     private enableRotation = () => {
         d3.timer((elapsed) => {
-            // console.log(elapsed);
-            
             this.projection.rotate([this.config.speed * elapsed - 120, this.config.verticalTilt, this.config.horizontalTilt]);
             this.segments.attr('d', this.path);
         });

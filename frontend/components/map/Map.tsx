@@ -9,7 +9,11 @@ import Tooltip from "../Tooltip";
 import WorldSphere from "./d3-globe";
 import World, { projections } from "./d3-map";
 
-const Map = () => {
+interface IProps {
+    initialSearch: string
+}
+
+const Map = (props: IProps) => {
     const [projection, setProjection] = useState<projections>(projections.flat);
     const [filter, setFilter] = useState<string>(null);
     const [world, setWorld] = useState<any>(null);
@@ -18,6 +22,8 @@ const Map = () => {
     useEffect(() => {
         if (world) {
             document.getElementById('worldMapD3').remove();
+        } else if (props.initialSearch) {
+            onSearch(props.initialSearch);
         }
 
         if (projection === projections.flat) {
@@ -35,20 +41,19 @@ const Map = () => {
     }, [data, world, filter])
 
     const onSearch = (query: string) => {
-        console.log(query);
         search(query)
-            .then(x => { 
-                setData(x); 
-                console.log(x);
+            .then(x => {
                 if (x && x.filters.length > 0) {
                     setFilter(x.filters[0]);
-                }
+                } 
+                setData(x); 
             });
     }
 
     const overlays = () => {
         const tools = <>
             <SearchBar
+                value={props.initialSearch}
                 onSearch={onSearch}
             />
             <LayersTool setProjection={setProjection} />

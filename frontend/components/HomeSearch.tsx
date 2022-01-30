@@ -5,18 +5,16 @@ import { Search } from "react-feather";
 import styled from "styled-components";
 
 interface IProps {
-    value: string,
     onSearch: (query: string) => any,
 }
 
-export const SearchBar = (props: IProps) => {
-    const { onSearch, value } = props;
+export const HomeSearch = (props: any) => {
+    const { onSearch } = props;
     const [query, setQuery] = useState<string>(null);
 
     return (
         <Container>
                 <Input 
-                    defaultValue={value}
                     value={query}
                     onChange={e => setQuery(e.target.value)}
                     type="text" 
@@ -40,8 +38,7 @@ const Container = styled.div`
     left: 15px;
     justify-content: space-evenly;
     padding: 0px 10px;
-    position: absolute;
-    width: 350px;
+    width: 450px;
 `
 
 const Input = styled(Form.Control)`
