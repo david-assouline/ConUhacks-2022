@@ -19,6 +19,10 @@ export default class World {
     // Projections used to display the map
     private projection: d3.GeoProjection;
     private pathGenerator: any;
+    
+    //data
+    private data: ApiResponse;
+    private filter: string;
 
     // All the fetched country name data
     private countryName: any;
@@ -83,7 +87,12 @@ export default class World {
             .on("mouseover", (event: any, countryInfo: any) => {
                 const country = this.countryName[countryInfo.id];
                 this.tooltip.style("display", "block");
-                this.tooltipTitle.html(`${country.name} ${emojis[country.postal]}`)
+                if (this.data) {
+                    const countryData = this.data.result.data[country.postal];
+                    this.tooltipTitle.html(`${country.name} ${emojis[country.postal]} ~ ${countryData ? countryData[this.filter] : 0}`);
+                } else {
+                   this.tooltipTitle.html(`${country.name} ${emojis[country.postal]}`);
+                }
             })
             .on("mouseleave", (d: any) => this.tooltip.style("display", "none"))
             .on("mousemove", (d: any, i: any, n: any) => {
@@ -127,7 +136,7 @@ export default class World {
     }
 
     render(data: ApiResponse, filter: string) {
-        const { color1, color2, color3, color4, color5 } = MainTheme.colours.legend;
+        const { color1, color2, color3, color4, color5, noDataColor } = MainTheme.colours.legend;
 
         var colors = d3.scaleQuantize()
             .domain([data.result[filter].min, data.result[filter].max])
@@ -137,8 +146,11 @@ export default class World {
         this.svgCountries
             .style('fill', (d) => {
                 const countryData = data.result.data[this.countryName[d.id].postal];
-                return colors(countryData ? countryData[filter] : 0);
+                return countryData ? colors(countryData[filter]) : noDataColor;
             })
+
+        this.data = data;
+        this.filter = filter;
     }
 }
 

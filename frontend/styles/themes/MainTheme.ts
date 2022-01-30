@@ -12,7 +12,8 @@ export const MainTheme: DefaultTheme = {
             color2: '#45b050',
             color3: '#f07d02',
             color4: '#e60000',
-            color5: '#9e1313'
+            color5: '#9e1313',
+            noDataColor: '#b9b9b9'
         },
         toolOverlay: {
             backgroundColor: 'white',

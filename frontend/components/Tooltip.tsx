@@ -1,12 +1,9 @@
 import * as React from "react";
 import styled from "styled-components";
-import { MainTheme } from '../styles/themes/MainTheme';
 
 const Tooltip = () => {
     return <Container id="tooltip-container">
         <Title id="tooltip-title">Test</Title>
-        {/* <hr/> */}
-        <Description/>
     </Container>
 }
 

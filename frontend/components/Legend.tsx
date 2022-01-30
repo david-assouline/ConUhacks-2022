@@ -30,6 +30,11 @@ export const Legend = (props: IProps) => {
                 {['1', '2', '3', '4', '5'].map(x => <LegendSquare key={x} color={`color${x}`}/>)}
                 <SquareTextRight>High</SquareTextRight>
             </SquareBox>
+            <Seperator/>
+            <SquareBox>
+                <SquareTextLeft>No Data</SquareTextLeft>
+                <LegendSquare color={`noDataColor`}/>
+            </SquareBox>
         </Container>
     );
 }
@@ -43,10 +48,10 @@ const Container = styled.div`
     color: ${props => props.theme.colours.toolOverlay.color};
     display: flex;
     height: 36px;
-    left: calc(50% - 100px);
+    left: calc(50% - 200px);
     justify-content: space-evenly;
     position: absolute;
-    width: 300px;
+    width: 400px;
 `
 const SquareBox = styled.div`
     align-items: center;
