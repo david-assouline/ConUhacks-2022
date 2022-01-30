@@ -50,7 +50,7 @@ def transform_data_frame(df):
     results_dict = dict()
     for i in range(len(df)):
         if len(df.loc[i, "Country"]) == 2:
-            results_dict[df.loc[i, "Country"]] = int(df.loc[i, "count"])
+            results_dict[df.loc[i, "Country"]] = {"count":int(df.loc[i, "count"])}
     return results_dict
 
     # if __name__ == '__main__':

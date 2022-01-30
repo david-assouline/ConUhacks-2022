@@ -39,11 +39,11 @@ def query():
 
 @app.route("/testWiki")
 def test_wiki_scrape():
-    results = query_search_string("List of chess grandmasters")
+    results = query_search_string("List of Michelin 3-star restaurants")
     print(generate_wiki_page_url(results[0]["pageid"]))
     print(fetch_html_content(results[0]["pageid"]))
     scraped_data = scrape(fetch_html_content(results[0]["pageid"]))
-    return transform(scraped_data, "Federation")
+    return transform(scraped_data, "Country (Regions)")
 
     # return scrape_by_url("https://en.wikipedia.org/wiki/List_of_chess_grandmasters")
 
