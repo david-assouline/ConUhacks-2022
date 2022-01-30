@@ -10,6 +10,8 @@ export default class World {
     private width = 960;
     private height = 500;
 
+    private yaw: any;
+
     // SVG elements in their nested order
     private svg: any;
     private g: any;
@@ -27,6 +29,11 @@ export default class World {
     constructor() {
         //this.projection = d3.geoOrthographic();
         // this.projection = d3.geoNaturalEarth1();
+        
+        this.yaw = d3.scaleLinear()
+        .domain([0, this.width])
+        .range([0, 360]);
+
         this.projection = d3.geoEquirectangular();
 
         this.pathGenerator = d3.geoPath().projection(this.projection);
