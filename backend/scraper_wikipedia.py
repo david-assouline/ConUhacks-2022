@@ -6,6 +6,7 @@ import json
 
 # URL for scrapping data
 COUNTRY_KEYWORDS = [ "country", "countries", "federations", "nations", "states" ]
+AGGREGATE_KEYWORDS = ["number", "count", "total"]
 
 def load_country_codes():
     json_file = open("ISO3166CountryCodes.json")
@@ -38,7 +39,7 @@ def scrape(response):
 def find_country_col(cols):
     for i in cols:
         for kw in COUNTRY_KEYWORDS:
-            if i.lower() in kw:
+            if i.lower().split(' ')[0] in kw:
                 return i
     
     return None
@@ -46,15 +47,27 @@ def find_country_col(cols):
 def transform(df, filters, selectedcolumn=None):
     if not selectedcolumn:
         selectedcolumn = find_country_col(df.columns)
-    print("YO")
-    print(selectedcolumn)
+    
     if not selectedcolumn:
         return {}
 
+    found_keyword = False
+    aggregate_column_name = -1
+    print(df.columns)
+    for column in df.columns:
+        if str(column).lower() in AGGREGATE_KEYWORDS:
+            found_keyword = True
+            aggregate_column_name = str(column)
+    if found_keyword:
+        df.rename(columns={selectedcolumn: "Country"}, inplace=True)
+        df.rename(columns={aggregate_column_name: "count"}, inplace=True)
+        results_dict = parse_data_frame(transform_country_codes(df), filters)
 
-    df = df.groupby(selectedcolumn).size().reset_index(name='count')
-    df.rename(columns={selectedcolumn: COUNTRY_COL}, inplace=True)
-    results_dict = parse_data_frame(transform_country_codes(df), filters)
+    else:
+        df["inserted_total_col"] = 1
+        df = df.groupby(selectedcolumn).size().reset_index(name='count')
+        df.rename(columns={selectedcolumn: COUNTRY_COL}, inplace=True)
+        results_dict = parse_data_frame(transform_country_codes(df), filters)
 
     return results_dict
 
@@ -72,9 +85,15 @@ def transform_country_codes(df):
 
 def parse_data_frame(df, filters):
     results_dict = dict()
+    df = df[df["Country"].str.len() == 2].reset_index()
     for i in range(len(df)):
-        if len(df.loc[i, "Country"]) == 2:
-            results_dict[df.loc[i, "Country"]] = {"count":int(df.loc[i, "count"])}
+        if type(df.loc[i, "count"]) == str:
+            print(df.loc[i, "count"].split('['))
+            if (len(df.loc[i, "count"].split('[')) > 1):
+                df.at[i, "count"] = int(df.loc[i, "count"].split('[')[0])
+
+        results_dict[df.loc[i, "Country"]] = {"count": int(df.loc[i, "count"])}
+      
 
     return {
         "data": results_dict,

@@ -65,7 +65,6 @@ def query_page_with_table(query_string):
     }
     R = S.get(url=URL, params=PARAMS)
     DATA = R.json()
-    print(DATA)
 
 
 def fetch_html_content(pageid):

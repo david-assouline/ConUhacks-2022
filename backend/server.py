@@ -59,10 +59,6 @@ def test_wiki_scrape():
     scraped_data = scrape(fetch_html_content(results[0]["pageid"]))
     return transform(scraped_data, "Country (Regions)")
 
-    # return scrape_by_url("https://en.wikipedia.org/wiki/List_of_chess_grandmasters")
-
-    # return scrape_by_url(generate_wiki_page_url(results[1]["pageid"]))
-
 
 if __name__ == "__main__":
     app.run(debug=True)
