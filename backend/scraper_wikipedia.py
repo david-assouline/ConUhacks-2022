@@ -7,7 +7,7 @@ import json
 
 
 # URL for scrapping data
-COUNTRY_KEYWORDS = [ "country", "countries", "federations", "nations", "states", 'locations' ]
+COUNTRY_KEYWORDS = [ "country", "countries", "federations", "nations", 'locations' ]
 AGGREGATE_KEYWORDS = ["number", "count", "total"]
 
 def load_country_codes():
@@ -83,8 +83,8 @@ def transform(df, filters, selectedcolumn=None):
         # df["inserted_total_col"] = 1
         # df = df.groupby(selectedcolumn).size().reset_index(name='count')
         df_grouped = df.groupby(selectedcolumn).size().reset_index(name='count')
-        df.rename(columns={selectedcolumn: COUNTRY_COL}, inplace=True)
         df = df.merge(df_grouped, on=selectedcolumn)
+        df.rename(columns={selectedcolumn: COUNTRY_COL}, inplace=True)
         filters = find_filters(df, filters)
         for f in filters:
             df.loc[:,f] = pd.to_numeric(df.loc[:,f], errors='coerce')
@@ -125,8 +125,8 @@ def parse_data_frame(df, filters):
 
         results_dict[df.loc[i, "Country"]] = {"count": int(df.loc[i, "count"])}
 
-        # for f in filters:
-        #     results_dict[df.loc[i, "Country"]] = {f: float(df.loc[i, f])}
+        for f in filters:
+            results_dict[df.loc[i, "Country"]] = {**results_dict[df.loc[i, "Country"]], **{f: float(df.loc[i, f])}}
 
     return {
         "data": results_dict,

@@ -4,6 +4,7 @@ from flask_cors import CORS
 from scraper_wikipedia import scrape, transform
 from wiki import query_search_string, generate_wiki_page_url, fetch_html_content
 import traceback
+import simplejson
 
 
 app = Flask(__name__)
@@ -26,33 +27,51 @@ def query():
         "query": query,  
     }
 
-    exact_match = next(filter(lambda p: p["title"] == query, pages), False)
+    exact_match = next(filter(lambda p: p["title"].lower() == query.lower(), pages), False)
     
     if "count" not in filters:
         filters.append("count")
         
     response["filters"] = filters
 
-    pageid = exact_match["pageid"] if exact_match else pages[0]["pageid"]
-    
-    scraped_data = {}
+    index = 0
     try:
-        scraped_data = transform(scrape(fetch_html_content(pageid)), filters)
-    except Exception as e:
-        app.logger.error(e)
-        traceback.print_exc()
+        pageid = exact_match["pageid"] if exact_match else pages[index]["pageid"]
+    except:
+        return {
+            "version": "1",
+            "success": False,
+            "query": query,            
+        }
+
+    scraped_data = {}
+    is_success = False
+    while index < 3:
+        try:
+            app.logger.warn("{}-{}".format(pages[index]["title"], pages[index]["pageid"]))
+            scraped_data = transform(scrape(fetch_html_content(pageid)), filters)
+            response["result"] = scraped_data
+            is_success = True if scraped_data else False
+            
+            if is_success:
+                break
+        except Exception as e:
+            app.logger.warn(e)
+            traceback.print_exc()
+        index = index + 1
+        pageid = pages[index]["pageid"]
         
-    response["result"] = scraped_data
-    is_success = True if scraped_data else False
+    
     
     if is_success:
         response["filters"] = list(filter(lambda k: k != 'data', scraped_data.keys()))
 
     if not exact_match and len(response) > 0 and not is_success:
         response["suggestions"] = [ p["title"] for p in pages ]
+        response["suggestions"].insert(0, "List of Chess Grandmasters per country")
     try:
         response["success"] = is_success
-        return response
+        return simplejson.dumps(response, ignore_nan=True)
     except:
         return {
             "version": "1",
