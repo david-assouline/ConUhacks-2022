@@ -35,8 +35,15 @@ const Map = () => {
     }, [data, world, filter])
 
     const onSearch = (query: string) => {
+        console.log(query);
         search(query)
-            .then(x => { setData(x); setFilter(x.filters[0]) });
+            .then(x => { 
+                setData(x); 
+                console.log(x);
+                if (x && x.filters.length > 0) {
+                    setFilter(x.filters[0]);
+                }
+            });
     }
 
     const overlays = () => {
@@ -66,7 +73,7 @@ const Map = () => {
 
     return (
         <div>
-            <WorldMapStyles id="WorldMap">
+            <WorldMapStyles id="WorldMap" fillBackground={projection === projections.flat}>
                 {overlays()}
             </WorldMapStyles>
             {
@@ -80,9 +87,9 @@ const Map = () => {
     )
 }
 
-const WorldMapStyles = styled.div`
+const WorldMapStyles = styled.div<{fillBackground: Boolean}>`
     align-items: center;
-    background-color: ${props => props.theme.colours.ocean};
+    background-color: ${props => props.fillBackground && props.theme.colours.ocean};
     display: flex;
     height: 100vh;
     font-family: Roboto;
