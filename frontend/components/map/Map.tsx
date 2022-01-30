@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { LayersTool } from "../LayersTool";
 import { Legend } from "../Legend";
 import { SearchBar } from "../SearchBar";
+// import WorldSphere from "./d3-globe";
 import World, { projections } from "./d3-map";
 
 
@@ -25,23 +26,25 @@ const Map = () => {
     const [world, setWorld] = useState<any>(null);
 
     useEffect(() => {
-        if (world) {
-            document.getElementById('worldMapD3').remove();
-        }
+        // if (world) {
+        //     document.getElementById('worldMapD3').remove();
+        // }
 
-        setWorld(new World(projection));
+        // setWorld(new WorldSphere());
+        // setWorld(new World(projection));
+        setWorld(new World(projections.sphere))
     }, [projection]);
 
-    useEffect(() => {
-        if (world && data)
-            world.render(data)
-    }, [data.data, world])
+    // useEffect(() => {
+    //     if (world && data)
+    //         world.render(data)
+    // }, [data.data, world])
 
     return <>
         <WorldMapStyles id="WorldMap">
-            <SearchBar/>
-            <LayersTool setProjection={setProjection}/>
-            <Legend/>
+            <SearchBar />
+            <LayersTool setProjection={setProjection} />
+            <Legend />
         </WorldMapStyles>
     </>
 }
@@ -49,7 +52,7 @@ const Map = () => {
 const WorldMapStyles = styled.div`
     align-items: center;
     display: flex;
-    height: 100%;
+    height: 100vh;
     max-width: calc(100vw);
     max-height: calc(100vh);
     justify-content: center;

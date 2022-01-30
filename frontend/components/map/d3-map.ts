@@ -9,6 +9,11 @@ export default class World {
     // Keep the constant height and width of the map
     private width = 960;
     private height = 500;
+    private config: any = {
+        speed: 0.005,
+        verticalTilt: -10,
+        horizontalTilt: 0
+    }
 
     // SVG elements in their nested order
     private svg: any;
@@ -79,6 +84,10 @@ export default class World {
             .text(d => this.countryName[d.id]);
 
         this.svg.call(this.zoom);
+
+        if (projectionType === projections.sphere) {
+            this.enableRotation();
+        }
     }
 
     private reset = () => {
@@ -109,6 +118,13 @@ export default class World {
                 .translate(-(x0 + x1) / 2, -(y0 + y1) / 2),
             d3.pointer(event, this.svg.node())
         );
+    }
+
+    private enableRotation = () => {
+        d3.timer((elapsed) => {
+            this.projection.rotate([this.config.speed * elapsed - 120, this.config.verticalTilt, this.config.horizontalTilt]);
+            this.svg.selectAll("path").attr("d", this.pathGenerator);
+        });
     }
 
     render(data: any) {
