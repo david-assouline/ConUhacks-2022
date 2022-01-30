@@ -113,10 +113,6 @@ export default class World {
     render(data: any, filter: string) {
         const {color1, color2, color3, color4, color5} = MainTheme.colours.legend;
 
-        if (filter) {
-            window.alert(filter);
-        }
-
         var colors = d3.scaleQuantize()
         .domain([0, 100])
         //@ts-ignore

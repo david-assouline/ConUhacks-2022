@@ -66,6 +66,11 @@ const WorldMapStyles = styled.div`
         fill: ${props => props.theme.colours.country};
         stroke: ${props => props.theme.colours.borders};
         stroke-width: 0.3px;
+
+        &:hover {
+            cursor: pointer;
+            fill: ${props => props.theme.colours.hoverCountry} !important;
+        }
     }
 `
 
