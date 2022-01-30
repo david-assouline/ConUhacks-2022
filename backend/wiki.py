@@ -1,11 +1,14 @@
 #!/usr/bin/python3
 
-import urllib.parse
 import requests
 
 S = requests.Session()
 
 URL = "https://en.wikipedia.org/w/api.php"
+
+def process_query_string(query_string: str):
+    result = '{0} intitle:"List of"'.format(query_string.strip('"'))
+    return result
 
 def set_user_agent(requests):
     headers = requests.utils.default_headers()
@@ -20,7 +23,7 @@ def query_search_string(query_string):
         "action": "query",
         "format": "json",
         "list": "search",
-        "srsearch": query_string
+        "srsearch": process_query_string(query_string)
     }
 
     R = S.get(url=URL, params=PARAMS)

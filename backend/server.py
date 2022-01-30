@@ -1,8 +1,8 @@
-from flask import Flask
+from itertools import count
+from flask import Flask, request
 from flask_cors import CORS
 from scraper_wikipedia import scrape, transform
 from wiki import query_search_string, generate_wiki_page_url, fetch_html_content
-import requests
 
 app = Flask(__name__)
 CORS(app)
@@ -15,26 +15,40 @@ def helloWorld():
 
 @app.route('/v1/query', methods=['GET'])
 def query():
-    query = requests.args.get('query')
-
-    return {
+    query = request.args.get('query', default="", type=str)
+    filters = request.args.getlist('filter') if request.args.getlist('filter') else []
+    pages = query_search_string(query.strip('"'))
+    
+    response = {
         "version": "1",
-        "resultSuccess": True,
-        "query": "",
-        "suggestions": [
-
-        ],
-        "filter": ['f1', 'f2'],
-        "data": {
-            "CA": {
-                "f1": 10,
-                "f2": 300
-            },
-            "US": {
-
-            },
-        }
+        "query": query,  
     }
+
+    exact_match = next(filter(lambda p: p["title"] == query, pages), False)
+    if not exact_match and len(response) > 0:
+        response["suggestions"] = [ p["title"] for p in pages ]
+    
+    if "count" not in filters:
+        filters.append("count")
+        
+    response["filters"] = filters
+
+    pageid = exact_match["pageid"] if exact_match else pages[0]["pageid"]
+
+    scraped_data = transform(scrape(fetch_html_content(pageid)), filters)
+    
+    response["result"] = scraped_data
+    
+    
+    try:
+        response["success"] = True if scraped_data else False
+        return response
+    except:
+        return {
+            "version": "1",
+            "success": False,
+            "query": query,            
+        }
 
 
 @app.route("/testWiki")

@@ -5,6 +5,17 @@ import json
 
 
 # URL for scrapping data
+COUNTRY_KEYWORDS = [ "country", "countries", "federations", "nations", "states" ]
+
+def load_country_codes():
+    json_file = open("ISO3166CountryCodes.json")
+    data = json.load(json_file)
+    json_file.close()
+    return data
+
+COUNTRY_CODES_ISO31066 = load_country_codes()
+
+COUNTRY_COL = "Country"
 
 def scrape_by_url(wikiurl):
     # table_class = "wikitable sortable jquery-tablesorter"
@@ -24,34 +35,57 @@ def scrape(response):
 
     return df
 
+def find_country_col(cols):
+    for i in cols:
+        for kw in COUNTRY_KEYWORDS:
+            if i.lower() in kw:
+                return i
+    
+    return None
 
-def transform(df, selectedcolumn):
+def transform(df, filters, selectedcolumn=None):
+    if not selectedcolumn:
+        selectedcolumn = find_country_col(df.columns)
+    print("YO")
+    print(selectedcolumn)
+    if not selectedcolumn:
+        return {}
+
+
     df = df.groupby(selectedcolumn).size().reset_index(name='count')
-    df.rename(columns={selectedcolumn: "Country"}, inplace=True)
-    df = transform_country_codes(df)
-    results_dict = transform_data_frame(df)
-    return json.dumps(results_dict)
+    df.rename(columns={selectedcolumn: COUNTRY_COL}, inplace=True)
+    results_dict = parse_data_frame(transform_country_codes(df), filters)
+
+    return results_dict
 
 
 def transform_country_codes(df):
     # Opening JSON file
-    with open('ISO3166CountryCodes.json') as json_file:
-        data = json.load(json_file)
     for country in df["Country"]:
         try:
-            if data[country.upper()] is not None:
-                df.replace({country: data[country.upper()]}, inplace=True)
+            if COUNTRY_CODES_ISO31066[country.upper()] is not None:
+                df.replace({country: COUNTRY_CODES_ISO31066[country.upper()]}, inplace=True)
         except KeyError:
             pass
     return df
 
 
-def transform_data_frame(df):
+def parse_data_frame(df, filters):
     results_dict = dict()
     for i in range(len(df)):
         if len(df.loc[i, "Country"]) == 2:
             results_dict[df.loc[i, "Country"]] = {"count":int(df.loc[i, "count"])}
-    return results_dict
 
-    # if __name__ == '__main__':
+    return {
+        "data": results_dict,
+        **calculate_filter_meta_data(df, filters)
+    }
+
+def calculate_filter_meta_data(df, filters):
+    return {f: {
+        'min': int(df[f].min()),
+        'max': int(df[f].max()),
+    } for f in filters }
+
+if __name__ == '__main__':
     wikiurl = input("Enter URL: ")
