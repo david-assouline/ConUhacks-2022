@@ -61,7 +61,10 @@ export default class World {
 
          // Gets the country names with iso number
          this.countryName = tsvData.reduce((accumulator, d) => {
-            accumulator[d.iso_n3] = d.name;
+            accumulator[d.iso_n3] = {
+                name: d.name,
+                postal: d.iso_a2
+            };
             return accumulator;
         }, {});
 
@@ -80,7 +83,7 @@ export default class World {
 
         this.svgCountries
             .append('title')
-            .text(d => this.countryName[d.id]);
+            .text(d => this.countryName[d.id].name);
 
         this.svg.call(this.zoom);
 
@@ -126,17 +129,18 @@ export default class World {
         });
     }
 
-    render(data: any, filter: string) {
+    render(data: ApiResponse, filter: string) {
         const {color1, color2, color3, color4, color5} = MainTheme.colours.legend;
-
+        
         var colors = d3.scaleQuantize()
-        .domain([0, 100])
+        .domain([data.result[filter].min, data.result[filter].max])
         //@ts-ignore
         .range([color1, color2, color3, color4, color5]);
 
         this.svgCountries
             .style('fill', (d) => {
-                return colors(Math.random()* (100));
+                const countryData = data.result.data[this.countryName[d.id].postal];
+                return colors(countryData ? countryData[filter] : 0);
             })
     }
 }
