@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { LayersTool } from "../LayersTool";
 import { Legend } from "../Legend";
 import { SearchBar } from "../SearchBar";
+import { Suggestions } from "../Suggestions";
 import World, { projections } from "./d3-map";
 
 
@@ -40,16 +41,19 @@ const Map = () => {
             world.render(data, filter ? filter : data.filter[0])
     }, [data.data, world, filter])
 
-    return <>
-        <WorldMapStyles id="WorldMap">
-            <SearchBar/>
-            <LayersTool setProjection={setProjection}/>
-            <Legend
-                filters={data ? data.filter : undefined}
-                setFilter={setFilter}
-            />
-        </WorldMapStyles>
-    </>
+    return (
+        <div>
+            <WorldMapStyles id="WorldMap">
+                <SearchBar/>
+                <LayersTool setProjection={setProjection}/>
+                <Legend
+                    filters={data ? data.filter : undefined}
+                    setFilter={setFilter}
+                />
+            </WorldMapStyles>
+            {/* <Suggestions/> */}
+        </div>
+    )
 }
 
 const WorldMapStyles = styled.div`
