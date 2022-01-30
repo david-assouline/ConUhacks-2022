@@ -74,7 +74,7 @@ export default class WorldSphere {
             .attr("class", "segment")
             .attr("d", this.path)
             .on("mouseover", (event: any, countryInfo: any) => {
-                const country = this.countryName[countryInfo.id];
+                const country = this.countryName[this.padNumbersTo3(countryInfo.id)];
                 this.tooltip.style("display", "block");
                 try {
                     if (this.apiData) {
@@ -103,6 +103,8 @@ export default class WorldSphere {
         this.segments = this.svg.selectAll('.segment');
     }
 
+    private padNumbersTo3 = x => x < 100 ? '0' + x : x;
+
     private enableRotation = () => {
         d3.timer((elapsed) => {
             // console.log(elapsed);
@@ -122,7 +124,7 @@ export default class WorldSphere {
 
         this.data
         .style('fill', (d) => {
-            const country = this.countryName[d.id];
+            const country = this.countryName[this.padNumbersTo3(d.id)];
             if (!country) {
                 console.log("DNW");
                 console.log(d.id);
