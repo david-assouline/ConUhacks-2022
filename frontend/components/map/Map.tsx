@@ -7,8 +7,9 @@ import World, { projections } from "./d3-map";
 
 
 const Map = () => {
-    const [projection, setProjection] = useState<projections>(projections.flat);
-
+    const [projection, setProjection] = useState<projections>(projections.flat);    
+    const [filter, setFilter] = useState<string>(null);
+    const [world, setWorld] = useState<any>(null);
     const [data, setData] = useState<ApiResponse>({
         filter: ['Filter 1', 'Filter 2'],
         data: {
@@ -22,9 +23,9 @@ const Map = () => {
         suggestions: []
     });
 
-    const [world, setWorld] = useState<any>(null);
-
     useEffect(() => {
+        console.log("CREATING A WORLD");
+
         if (world) {
             document.getElementById('worldMapD3').remove();
         }
@@ -33,15 +34,20 @@ const Map = () => {
     }, [projection]);
 
     useEffect(() => {
+        console.log("REDRAWING THE WORLD");
+
         if (world && data)
-            world.render(data)
-    }, [data.data, world])
+            world.render(data, filter ? filter : data.filter[0])
+    }, [data.data, world, filter])
 
     return <>
         <WorldMapStyles id="WorldMap">
             <SearchBar/>
             <LayersTool setProjection={setProjection}/>
-            <Legend/>
+            <Legend
+                filters={data ? data.filter : undefined}
+                setFilter={setFilter}
+            />
         </WorldMapStyles>
     </>
 }

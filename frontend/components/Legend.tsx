@@ -3,17 +3,27 @@ import { Form } from "react-bootstrap";
 import styled from "styled-components";
 
 interface IProps {
-    filters: string
+    filters?: string[],
+    setFilter: (x: string) => any
 }
 
-export const Legend = (props: any) => {
+export const Legend = (props: IProps) => {
+    const {filters, setFilter} = props;
+
     return (
         <Container>
-            <DropDown aria-label="Default select example">
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
-            </DropDown>
+            {
+                filters
+                ?
+                <DropDown 
+                    aria-label="Select Filter"
+                    onChange={(e) => setFilter(e.target.value)}
+                >
+                    {filters.map(x => <option value={x} key={x}>{x}</option>)}
+                </DropDown>
+                :
+                <TempDropDown>No Filters</TempDropDown>
+            }
             <Seperator/>
             <SquareBox>
                 <SquareTextLeft>Low</SquareTextLeft>
@@ -54,6 +64,13 @@ const Seperator = styled.div`
     height: 100%;
     width: 1px;
     background-color: #ececec;
+`
+
+const TempDropDown = styled.div`
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100px;
 `
 
 const DropDown = styled(Form.Select)`
