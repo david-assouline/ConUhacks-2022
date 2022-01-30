@@ -1,8 +1,9 @@
 import React, { ReactNode } from 'react';
-import { Modal as RModal } from 'react-bootstrap';
+import { Modal as RModal, Button } from 'react-bootstrap';
 import styled , { css }from 'styled-components';
 
 type IProps = {
+    onClose: () => any,
     suggestions: string[]
     onSearch: (x: string) => any
 }
@@ -22,6 +23,9 @@ const Suggestions = (props: IProps) => {
 				<RModal.Title>
                     No Data Found, maybe this would interest you?
                 </RModal.Title>
+                <Button className="close" onClick={props.onClose}>
+                    <span aria-hidden="true">&times;</span>
+                </Button>
 			</RModal.Header>
 			<RModal.Body>
                 <ul>
