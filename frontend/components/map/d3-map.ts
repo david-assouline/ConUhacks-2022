@@ -93,10 +93,6 @@ export default class World {
                     .style("top", event.clientY + "px");
             });
 
-        this.svgCountries
-            .append('title')
-            .text(d => this.countryName[d.id].name);
-
         this.svg.call(this.zoom);
     }
 
