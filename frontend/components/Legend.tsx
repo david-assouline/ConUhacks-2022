@@ -1,9 +1,19 @@
+import * as React from "react";
+import { Form } from "react-bootstrap";
 import styled from "styled-components";
+
+interface IProps {
+    filters: string
+}
 
 export const Legend = (props: any) => {
     return (
         <Container>
-            <DropDown>Filter 1333effffe</DropDown>
+            <DropDown aria-label="Default select example">
+                <option value="1">One</option>
+                <option value="2">Two</option>
+                <option value="3">Three</option>
+            </DropDown>
             <Seperator/>
             <SquareBox>
                 <SquareTextLeft>Low</SquareTextLeft>
@@ -46,11 +56,23 @@ const Seperator = styled.div`
     background-color: #ececec;
 `
 
-const DropDown = styled.div`
+const DropDown = styled(Form.Select)`
+    border: none !important;
+    outline: none;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     width: 100px;
+
+    &:focus {
+        border: none;
+        outline: none;
+    }
+
+    &:focus-within {
+        border: none;
+        outline: none;
+    }
 `
 
 const SquareTextLeft = styled.div`
