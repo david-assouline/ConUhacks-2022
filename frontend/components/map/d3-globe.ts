@@ -3,6 +3,7 @@ import { feature } from 'topojson-client';
 import { MainTheme } from '../../styles/themes/MainTheme';
 import tsvData from './tsvData';
 import topoJSONdata from './topo2.json';
+import emojis from './emojis';
 
 
 export default class WorldSphere {
@@ -17,6 +18,9 @@ export default class WorldSphere {
 
     private countryName;
 
+    private apiData: ApiResponse;
+    private filter: string;
+
     // SVG elements in their nested order
     private svg: any;
 
@@ -26,6 +30,10 @@ export default class WorldSphere {
     private segments: any;
 
     private data: any;
+
+    // Tooltip
+    private tooltip;
+    private tooltipTitle;
 
     constructor() {
 
@@ -64,7 +72,32 @@ export default class WorldSphere {
             .data(countries.features)
             .enter().append("path")
             .attr("class", "segment")
-            .attr("d", this.path);
+            .attr("d", this.path)
+            .on("mouseover", (event: any, countryInfo: any) => {
+                const country = this.countryName[countryInfo.id];
+                this.tooltip.style("display", "block");
+                try {
+                    if (this.apiData) {
+                        const countryData = this.apiData.result.data[country.postal];
+                        this.tooltipTitle.html(`${country.name} ${emojis[country.postal]} ~ ${countryData ? countryData[this.filter] : 0}`);
+                    } else {
+                       this.tooltipTitle.html(`${country.name} ${emojis[country.postal]}`);
+                    }
+                } catch (e) {
+
+                }
+            })
+            .on("mouseleave", (d: any) => this.tooltip.style("display", "none"))
+            .on("mousemove", (d: any, i: any, n: any) => {
+                // @ts-ignore
+                this.tooltip.style("left", event.clientX + 20 + "px")
+                    // @ts-ignore
+                    .style("top", event.clientY + "px");
+            });
+
+        // Get the tooltip divs
+        this.tooltip = d3.select("#tooltip-container");
+        this.tooltipTitle = d3.select("#tooltip-title");
 
         this.enableRotation();
         this.segments = this.svg.selectAll('.segment');
@@ -98,6 +131,9 @@ export default class WorldSphere {
                 
             const countryData = data.result.data[country.postal];
             return countryData ? colors(countryData[filter]) : noDataColor;
-        })
+        });
+
+        this.apiData = data;
+        this.filter = filter;
     }
 }
