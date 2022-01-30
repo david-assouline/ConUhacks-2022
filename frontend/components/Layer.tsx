@@ -1,12 +1,23 @@
 import styled from "styled-components";
+import {ILayer} from "./LayersTool";
+import { projections } from "./map/d3-map";
 
 interface IProps {
-    imagePath: string;
+    layer: ILayer;
+    setProjection: React.Dispatch<React.SetStateAction<projections>>;
 }
 
 export const Layer = (props: IProps) => {
+    const setLayer = () => props.setProjection(props.layer.projection)
+
     return <LayerContainer>
-        <img height="48px" width="48px" src={props.imagePath} alt={`Layer ${props.imagePath}`} />
+        <img 
+            height="48px" 
+            width="48px" 
+            src={props.layer.icon} 
+            alt={`Layer ${props.layer.text}`} 
+            onClick={setLayer}
+        />
     </LayerContainer>
 }
 

@@ -3,10 +3,12 @@ import styled from "styled-components";
 import { LayersTool } from "../LayersTool";
 import { Legend } from "../Legend";
 import { SearchBar } from "../SearchBar";
-import World from "./d3-map";
+import World, { projections } from "./d3-map";
 
 
 const Map = () => {
+    const [projection, setProjection] = useState<projections>(projections.flat);
+
     const [data, setData] = useState<ApiResponse>({
         filters: ['Filter 1', 'Filter 2'],
         data: {
@@ -19,9 +21,12 @@ const Map = () => {
     const [world, setWorld] = useState<any>(null);
 
     useEffect(() => {
-        if (world === null)
-            setWorld(new World());
-    }, []);
+        if (world) {
+            document.getElementById('worldMapD3').remove();
+        }
+
+        setWorld(new World(projection));
+    }, [projection]);
 
     useEffect(() => {
         if (world && data)
@@ -31,7 +36,7 @@ const Map = () => {
     return <>
         <WorldMapStyles id="WorldMap">
             <SearchBar/>
-            <LayersTool/>
+            <LayersTool setProjection={setProjection}/>
             <Legend/>
         </WorldMapStyles>
     </>
