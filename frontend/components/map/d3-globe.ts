@@ -2,7 +2,7 @@ import * as d3 from 'd3';
 import { feature } from 'topojson-client';
 import { MainTheme } from '../../styles/themes/MainTheme';
 import tsvData from './tsvData';
-import topoJSONdata from './topo.json';
+import topoJSONdata from './topo2.json';
 
 
 export default class WorldSphere {
@@ -23,6 +23,7 @@ export default class WorldSphere {
     // Projection stuff to display the map
     private projection: d3.GeoProjection = d3.geoOrthographic();
     private path: d3.GeoPath<any, d3.GeoPermissibleObjects>;
+    private segments: any;
 
     private data: any;
 
@@ -66,17 +67,20 @@ export default class WorldSphere {
             .attr("d", this.path);
 
         this.enableRotation();
+        this.segments = this.svg.selectAll('.segment');
     }
 
     private enableRotation = () => {
         d3.timer((elapsed) => {
+            // console.log(elapsed);
+            
             this.projection.rotate([this.config.speed * elapsed - 120, this.config.verticalTilt, this.config.horizontalTilt]);
-            this.svg.selectAll(".segment").attr("d", this.path);
+            this.segments.attr('d', this.path);
         });
     }
 
     render(data: any, filter: string) {
-        const {color1, color2, color3, color4, color5} = MainTheme.colours.legend;
+        const {color1, color2, color3, color4, color5, noDataColor} = MainTheme.colours.legend;
     
         var colors = d3.scaleQuantize()
         .domain([data.result[filter].min, data.result[filter].max])
@@ -85,9 +89,15 @@ export default class WorldSphere {
 
         this.data
         .style('fill', (d) => {
-            console.log("SADF");
-            const countryData = data.result.data[this.countryName[d.id].postal];
-            return colors(countryData ? countryData[filter] : 0);
+            const country = this.countryName[d.id];
+            if (!country) {
+                console.log("DNW");
+                console.log(d.id);
+                return noDataColor;
+            }
+                
+            const countryData = data.result.data[country.postal];
+            return countryData ? colors(countryData[filter]) : noDataColor;
         })
     }
 }
