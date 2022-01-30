@@ -5,6 +5,7 @@ import { LayersTool } from "../LayersTool";
 import { Legend } from "../Legend";
 import { SearchBar } from "../SearchBar";
 import { Suggestions } from "../Suggestions";
+import Tooltip from "../Tooltip";
 import WorldSphere from "./d3-globe";
 import World, { projections } from "./d3-map";
 
@@ -51,6 +52,7 @@ const Map = () => {
                 filters={data ? data.filters : undefined}
                 setFilter={setFilter}
             />
+            <Tooltip/>
         </>
 
         if (projection === projections.sphere) {
