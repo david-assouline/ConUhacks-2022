@@ -6,6 +6,7 @@ import { MainTheme } from '../styles/themes/MainTheme';
 //Import global CSS
 import '../styles/globals.css';
 import '../styles/stars.css';
+import { DarkTheme } from '../styles/themes/DarkTheme';
 
 function MyApp({ Component, pageProps }) {
 	return (

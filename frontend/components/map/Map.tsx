@@ -82,6 +82,7 @@ const Map = () => {
 
 const WorldMapStyles = styled.div`
     align-items: center;
+    background-color: ${props => props.theme.colours.ocean};
     display: flex;
     height: 100vh;
     font-family: Roboto;

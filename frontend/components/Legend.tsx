@@ -32,7 +32,7 @@ export const Legend = (props: IProps) => {
             </SquareBox>
             <Seperator/>
             <SquareBox>
-                <SquareTextLeft>No Data</SquareTextLeft>
+                <SquareTextLeft>N/A</SquareTextLeft>
                 <LegendSquare color={`noDataColor`}/>
             </SquareBox>
         </Container>
@@ -48,10 +48,10 @@ const Container = styled.div`
     color: ${props => props.theme.colours.toolOverlay.color};
     display: flex;
     height: 36px;
-    left: calc(50% - 200px);
+    left: calc(50% - 185px);
     justify-content: space-evenly;
     position: absolute;
-    width: 400px;
+    width: 370px;
 `
 const SquareBox = styled.div`
     align-items: center;

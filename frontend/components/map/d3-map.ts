@@ -35,6 +35,7 @@ export default class World {
 
     constructor(projectionType: projections) {
         this.projection = d3.geoNaturalEarth1();
+        // this.projection = d3.geoEquirectangular();
         this.pathGenerator = d3.geoPath().projection(this.projection);
 
         this.zoom = d3.zoom()

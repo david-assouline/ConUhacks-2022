@@ -3,17 +3,13 @@ import { feature } from 'topojson-client';
 import { MainTheme } from '../../styles/themes/MainTheme';
 import topoJSONdata from './topo.json';
 import tsvData from './tsvData';
+import emojis from './emojis';
 
 export default class World {
 
     // Keep the constant height and width of the map
     private width = 960;
     private height = 500;
-    private config: any = {
-        speed: 0.005,
-        verticalTilt: -10,
-        horizontalTilt: 0
-    }
 
     // SVG elements in their nested order
     private svg: any;
@@ -23,19 +19,26 @@ export default class World {
     // Projections used to display the map
     private projection: d3.GeoProjection;
     private pathGenerator: any;
+    
+    //data
+    private data: ApiResponse;
+    private filter: string;
 
     // All the fetched country name data
     private countryName: any;
 
     private zoom: any;
 
+    // Tooltip
+    private tooltip;
+    private tooltipTitle;
+
     constructor(projectionType: projections) {
-        if (projectionType === projections.flat) {
-            this.projection = d3.geoNaturalEarth1();
-        } else {
-            this.projection = d3.geoOrthographic();
-        }
-        
+        // this.projection = d3.geoNaturalEarth1();
+        this.projection = d3.geoEquirectangular();
+        this.projection = d3.geoMercator()
+                        .center([0, 0])
+                        .scale(100);
         this.pathGenerator = d3.geoPath().projection(this.projection);
 
         this.zoom = d3.zoom()
@@ -44,7 +47,7 @@ export default class World {
 
         this.svg = d3.select("#WorldMap")
             .append("svg")
-            .attr('id','worldMapD3')
+            .attr('id', 'worldMapD3')
             .attr("viewBox", `0 0 ${this.width} ${this.height}`)
             .attr("max-width", "100%")
             .attr("width", "100%")
@@ -59,8 +62,8 @@ export default class World {
             .attr('d', this.pathGenerator({ type: "Sphere" }))
             .attr("fill", MainTheme.colours.ocean);
 
-         // Gets the country names with iso number
-         this.countryName = tsvData.reduce((accumulator, d) => {
+        // Gets the country names with iso number
+        this.countryName = tsvData.reduce((accumulator, d) => {
             accumulator[d.iso_n3] = {
                 name: d.name,
                 postal: d.iso_a2
@@ -71,6 +74,11 @@ export default class World {
         // Get the topoJSON country data
         const countries: any = feature(topoJSONdata as any, (topoJSONdata as any).objects.countries);
 
+        // Get the tooltip divs
+        this.tooltip = d3.select("#tooltip-container");
+        this.tooltipTitle = d3.select("#tooltip-title");
+
+        // Assign the countries data
         this.svgCountries = this.g
             .append("g")
             .selectAll('path')
@@ -79,17 +87,26 @@ export default class World {
             .append('path')
             .attr('d', this.pathGenerator)
             .attr('class', 'country')
-            .on("click", this.clicked);
-
-        this.svgCountries
-            .append('title')
-            .text(d => this.countryName[d.id].name);
+            .on("click", this.clicked)
+            .on("mouseover", (event: any, countryInfo: any) => {
+                const country = this.countryName[countryInfo.id];
+                this.tooltip.style("display", "block");
+                if (this.data) {
+                    const countryData = this.data.result.data[country.postal];
+                    this.tooltipTitle.html(`${country.name} ${emojis[country.postal]} ~ ${countryData ? countryData[this.filter] : 0}`);
+                } else {
+                   this.tooltipTitle.html(`${country.name} ${emojis[country.postal]}`);
+                }
+            })
+            .on("mouseleave", (d: any) => this.tooltip.style("display", "none"))
+            .on("mousemove", (d: any, i: any, n: any) => {
+                // @ts-ignore
+                this.tooltip.style("left", event.clientX + 20 + "px")
+                    // @ts-ignore
+                    .style("top", event.clientY + "px");
+            });
 
         this.svg.call(this.zoom);
-
-        if (projectionType === projections.sphere) {
-            this.enableRotation();
-        }
     }
 
     private reset = () => {
@@ -122,26 +139,22 @@ export default class World {
         );
     }
 
-    private enableRotation = () => {
-        d3.timer((elapsed) => {
-            this.projection.rotate([this.config.speed * elapsed - 120, this.config.verticalTilt, this.config.horizontalTilt]);
-            this.svg.selectAll("path").attr("d", this.pathGenerator);
-        });
-    }
-
     render(data: ApiResponse, filter: string) {
-        const {color1, color2, color3, color4, color5} = MainTheme.colours.legend;
-        
+        const { color1, color2, color3, color4, color5, noDataColor } = MainTheme.colours.legend;
+
         var colors = d3.scaleQuantize()
-        .domain([data.result[filter].min, data.result[filter].max])
-        //@ts-ignore
-        .range([color1, color2, color3, color4, color5]);
+            .domain([data.result[filter].min, data.result[filter].max])
+            //@ts-ignore
+            .range([color1, color2, color3, color4, color5]);
 
         this.svgCountries
             .style('fill', (d) => {
                 const countryData = data.result.data[this.countryName[d.id].postal];
-                return colors(countryData ? countryData[filter] : 0);
+                return countryData ? colors(countryData[filter]) : noDataColor;
             })
+
+        this.data = data;
+        this.filter = filter;
     }
 }
 
