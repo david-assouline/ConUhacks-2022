@@ -5,6 +5,7 @@ import { LayersTool } from "../LayersTool";
 import { Legend } from "../Legend";
 import { SearchBar } from "../SearchBar";
 import { Suggestions } from "../Suggestions";
+import WorldSphere from "./d3-globe";
 import World, { projections } from "./d3-map";
 
 
@@ -22,7 +23,11 @@ const Map = () => {
             document.getElementById('worldMapD3').remove();
         }
 
-        setWorld(new World(projection));
+        if (projection === projections.flat) {
+            setWorld(new World(projections.flat))
+        } else if (projection === projections.sphere) {
+            setWorld(new WorldSphere());
+        }
     }, [projection]);
 
     useEffect(() => {
@@ -66,6 +71,17 @@ const WorldMapStyles = styled.div`
     overflow: hidden!important;
 
     & .country {
+        fill: ${props => props.theme.colours.country};
+        stroke: ${props => props.theme.colours.borders};
+        stroke-width: 0.3px;
+
+        &:hover {
+            cursor: pointer;
+            fill: ${props => props.theme.colours.hoverCountry} !important;
+        }
+    }
+
+    & .segment {
         fill: ${props => props.theme.colours.country};
         stroke: ${props => props.theme.colours.borders};
         stroke-width: 0.3px;
