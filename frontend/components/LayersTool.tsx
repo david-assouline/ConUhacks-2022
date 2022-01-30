@@ -16,16 +16,19 @@ export interface ILayer {
     text: string;
 }
 
+//@ts-ignore
+const svg = <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sc-kfPuZi jmysBI"><polygon stroke="#169be1" points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline stroke="#cb0010" points="2 17 12 22 22 17"></polyline><polyline stroke="#0eab61" points="2 12 12 17 22 12"></polyline></svg>;
+
 export const LayersTool = (props: IProps) => {
     const [showLayers, setShowLayers] = React.useState(false);
     const layers: ILayer[] = [
         {
-            icon: "/layer-flat.png",
+            icon: "https://cdn-icons.flaticon.com/png/512/1865/premium/1865269.png?token=exp=1643511260~hmac=89f7f059fbf4d9bc1c9c8caebf31b0d5",
             projection: projections.flat,
             text: 'Flat map'
         },
         {
-            icon: "/layer-globe.png",
+            icon: "https://cdn-icons.flaticon.com/png/512/3192/premium/3192970.png?token=exp=1643510660~hmac=ab36f09b52e9caa1c01ca7f19fa7c0c7",
             projection: projections.sphere,
             text: 'Globe'
         }
@@ -36,10 +39,9 @@ export const LayersTool = (props: IProps) => {
             onMouseOver={() => setShowLayers(true)}
             onMouseLeave={() => setShowLayers(false)}>
             <IconLayerWrapper>
-                <LayerIcon />
+                {svg}
             </IconLayerWrapper>
-            <LayersContainer layers={layers} setProjection={props.setProjection} />
-            {/* showLayers && <LayersContainer layers={layers} /> */}
+            {showLayers && <LayersContainer layers={layers} setProjection={props.setProjection}/>}
         </LayerWrapper>
     );
 }
@@ -53,8 +55,8 @@ const LayerWrapper = styled.div`
 `
 
 const IconLayerWrapper = styled.div`
-    height: 75px;
-    width: 75px;
+    height: 80px;
+    width: 80px;
     display: flex;
     flex-direction: row;
     align-items: center;
