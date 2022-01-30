@@ -4,7 +4,7 @@ import search from "../../actions/utils/search";
 import { LayersTool } from "../LayersTool";
 import { Legend } from "../Legend";
 import { SearchBar } from "../SearchBar";
-import Suggestions from "../Suggestions";
+// import Suggestions from "../Suggestions";
 import Tooltip from "../Tooltip";
 import WorldSphere from "./d3-globe";
 import World, { projections } from "./d3-map";
@@ -71,7 +71,7 @@ const Map = () => {
             <WorldMapStyles id="WorldMap">
                 {overlays()}
             </WorldMapStyles>
-            <Suggestions/>
+            {/* <Suggestions/> */}
         </div>
     )
 }
