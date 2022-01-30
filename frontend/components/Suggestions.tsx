@@ -3,11 +3,13 @@ import { Modal as RModal } from 'react-bootstrap';
 import styled , { css }from 'styled-components';
 
 type IProps = {
-
+    suggestions: string[]
+    onSearch: (x: string) => any
 }
 
 const Suggestions = (props: IProps) => {
-    const suggestions = ['suggestion 1', 'suggestion 2', 'suggestion 3'];
+    const {onSearch, suggestions} = props;
+
     return (
         <RModal 
             centered
@@ -23,12 +25,20 @@ const Suggestions = (props: IProps) => {
 			</RModal.Header>
 			<RModal.Body>
                 <ul>
-                    {suggestions.map(x => <li>{x}</li>)}
+                    {suggestions && suggestions.map(x => <Suggestion onClick={() => onSearch(x)}>{x}</Suggestion>)}
                 </ul>
             </RModal.Body>
       	</RModal>
     )
 }
+
+const Suggestion = styled.li`
+    font-family: Roboto;
+    &:hover {
+        cursor: pointer;
+        color: ${props => props.theme.colours.toolOverlay.hover};
+    }
+`
 
 Suggestions.defaultProps = {
     preventClose: false,

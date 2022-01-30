@@ -16,8 +16,6 @@ const Map = () => {
     const [data, setData] = useState<ApiResponse>(null);
 
     useEffect(() => {
-        // search('chess grandmasters by country wikipedia');
-
         if (world) {
             document.getElementById('worldMapD3').remove();
         }
@@ -30,7 +28,7 @@ const Map = () => {
     }, [projection]);
 
     useEffect(() => {
-        if (world && data) {
+        if (world && data && data.success) {
             world.render(data, filter ? filter : data.filters[0])
         }
             
@@ -71,7 +69,13 @@ const Map = () => {
             <WorldMapStyles id="WorldMap">
                 {overlays()}
             </WorldMapStyles>
-            <Suggestions/>
+            {
+               data && !data.success && 
+               <Suggestions
+                    suggestions={data.suggestions}
+                    onSearch={onSearch}
+                />
+            }
         </div>
     )
 }
