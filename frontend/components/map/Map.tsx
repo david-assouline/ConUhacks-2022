@@ -10,12 +10,16 @@ const Map = () => {
     const [projection, setProjection] = useState<projections>(projections.flat);
 
     const [data, setData] = useState<ApiResponse>({
-        filters: ['Filter 1', 'Filter 2'],
+        filter: ['Filter 1', 'Filter 2'],
         data: {
             "Canada": {
                 "f1": 2
             }
-        }
+        },
+        versions: '1.0',
+        resultSuccess: true,
+        query: '',
+        suggestions: []
     });
 
     const [world, setWorld] = useState<any>(null);

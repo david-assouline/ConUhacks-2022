@@ -1,7 +1,7 @@
 type ApiResponse = {
     data: ApiData,
     filter: string[]
-    versions: number,
+    versions: string,
     resultSuccess: boolean,
     query: string,
     suggestions: string[],
