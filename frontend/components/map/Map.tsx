@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import search from "../../actions/utils/search";
 import { LayersTool } from "../LayersTool";
 import { Legend } from "../Legend";
 import { SearchBar } from "../SearchBar";
@@ -11,21 +12,11 @@ const Map = () => {
     const [projection, setProjection] = useState<projections>(projections.flat);    
     const [filter, setFilter] = useState<string>(null);
     const [world, setWorld] = useState<any>(null);
-    const [data, setData] = useState<ApiResponse>({
-        filter: ['Filter 1', 'Filter 2'],
-        data: {
-            "Canada": {
-                "f1": 2
-            }
-        },
-        versions: '1.0',
-        resultSuccess: true,
-        query: '',
-        suggestions: []
-    });
+    const [data, setData] = useState<ApiResponse>(null);
 
     useEffect(() => {
         console.log("CREATING A WORLD");
+        // search('chess grandmasters by country wikipedia');
 
         if (world) {
             document.getElementById('worldMapD3').remove();
@@ -38,16 +29,23 @@ const Map = () => {
         console.log("REDRAWING THE WORLD");
 
         if (world && data)
-            world.render(data, filter ? filter : data.filter[0])
-    }, [data.data, world, filter])
+            world.render(data, filter ? filter : data.filters[0])
+    }, [data, world, filter])
+
+    const onSearch = (query: string) => {
+        search(query)
+            .then(x => {setData(x); setFilter(x.filters[0])});
+    }
 
     return (
         <div>
             <WorldMapStyles id="WorldMap">
-                <SearchBar/>
+                <SearchBar
+                    onSearch={onSearch}
+                />
                 <LayersTool setProjection={setProjection}/>
                 <Legend
-                    filters={data ? data.filter : undefined}
+                    filters={data ? data.filters : undefined}
                     setFilter={setFilter}
                 />
             </WorldMapStyles>

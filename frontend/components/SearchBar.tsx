@@ -1,13 +1,28 @@
-import * as React from "react";
+
+import { useState } from "react";
 import { Form } from "react-bootstrap";
 import { Search } from "react-feather";
 import styled from "styled-components";
 
+interface IProps {
+    onSearch: (query: string) => any,
+}
+
 export const SearchBar = (props: any) => {
+    const { onSearch } = props;
+    const [query, setQuery] = useState<string>(null);
+
     return (
         <Container>
-              <Input type="text" placeholder="Search"/>
-              <SearchIcon/>
+                <Input 
+                    value={query}
+                    onChange={e => setQuery(e.target.value)}
+                    type="text" 
+                    placeholder="Search"
+                />
+                <SearchIcon
+                    onClick={() => onSearch(query)}
+                />
         </Container>
     );
 }
