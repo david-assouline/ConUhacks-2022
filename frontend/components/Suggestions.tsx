@@ -1,21 +1,37 @@
-import * as React from "react";
-import { Button, Modal } from "react-bootstrap";
+import React, { ReactNode } from 'react';
+import { Modal as RModal } from 'react-bootstrap';
+import styled , { css }from 'styled-components';
 
-export const Suggestions = (props: any) => {
-    return (
-        <Modal.Dialog>
-            <Modal.Header closeButton>
-                <Modal.Title>Modal title</Modal.Title>
-            </Modal.Header>
+type IProps = {
 
-            <Modal.Body>
-                <p>Modal body text goes here.</p>
-            </Modal.Body>
-
-            <Modal.Footer>
-                <Button variant="secondary">Close</Button>
-                <Button variant="primary">Save changes</Button>
-            </Modal.Footer>
-        </Modal.Dialog>
-    );
 }
+
+const Suggestions = (props: IProps) => {
+    const suggestions = ['suggestion 1', 'suggestion 2', 'suggestion 3'];
+    return (
+        <RModal 
+            centered
+            show
+            size={'lg'}
+        >
+			<RModal.Header 
+                // closeButton={!preventClose}
+            >
+				<RModal.Title>
+                    No Data Found, maybe this would interest you?
+                </RModal.Title>
+			</RModal.Header>
+			<RModal.Body>
+                <ul>
+                    {suggestions.map(x => <li>{x}</li>)}
+                </ul>
+            </RModal.Body>
+      	</RModal>
+    )
+}
+
+Suggestions.defaultProps = {
+    preventClose: false,
+}
+
+export default Suggestions;

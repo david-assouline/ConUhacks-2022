@@ -4,7 +4,7 @@ import search from "../../actions/utils/search";
 import { LayersTool } from "../LayersTool";
 import { Legend } from "../Legend";
 import { SearchBar } from "../SearchBar";
-import { Suggestions } from "../Suggestions";
+import Suggestions from "../Suggestions";
 import WorldSphere from "./d3-globe";
 import World, { projections } from "./d3-map";
 
@@ -16,7 +16,6 @@ const Map = () => {
     const [data, setData] = useState<ApiResponse>(null);
 
     useEffect(() => {
-        console.log("CREATING A WORLD");
         // search('chess grandmasters by country wikipedia');
 
         if (world) {
@@ -31,10 +30,10 @@ const Map = () => {
     }, [projection]);
 
     useEffect(() => {
-        console.log("REDRAWING THE WORLD");
-
-        if (world && data)
+        if (world && data) {
             world.render(data, filter ? filter : data.filters[0])
+        }
+            
     }, [data, world, filter])
 
     const onSearch = (query: string) => {
@@ -54,7 +53,7 @@ const Map = () => {
                     setFilter={setFilter}
                 />
             </WorldMapStyles>
-            {/* <Suggestions/> */}
+            <Suggestions/>
         </div>
     )
 }

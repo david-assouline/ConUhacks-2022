@@ -23,12 +23,12 @@ export const LayersTool = (props: IProps) => {
     const [showLayers, setShowLayers] = React.useState(false);
     const layers: ILayer[] = [
         {
-            icon: "https://cdn-icons.flaticon.com/png/512/1865/premium/1865269.png?token=exp=1643511260~hmac=89f7f059fbf4d9bc1c9c8caebf31b0d5",
+            icon: "/map.png",
             projection: projections.flat,
             text: 'Flat map'
         },
         {
-            icon: "https://cdn-icons.flaticon.com/png/512/3192/premium/3192970.png?token=exp=1643510660~hmac=ab36f09b52e9caa1c01ca7f19fa7c0c7",
+            icon: "/pin.png",
             projection: projections.sphere,
             text: 'Globe'
         }
