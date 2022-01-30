@@ -79,6 +79,7 @@ const Map = () => {
             {
                data && !data.success && 
                <Suggestions
+                    onClose={() => setData(null)}
                     suggestions={data.suggestions}
                     onSearch={onSearch}
                 />
