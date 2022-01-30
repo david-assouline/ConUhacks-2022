@@ -10,6 +10,8 @@ export default class World {
     private width = 960;
     private height = 500;
 
+    private yaw: any;
+
     // SVG elements in their nested order
     private svg: any;
     private g: any;
@@ -24,14 +26,16 @@ export default class World {
 
     private zoom: any;
 
-    constructor(projectionType: projections) {
+    constructor() {
+        //this.projection = d3.geoOrthographic();
+        // this.projection = d3.geoNaturalEarth1();
         
-        if (projectionType === projections.flat) {
-            this.projection = d3.geoNaturalEarth1();
-        } else {
-            this.projection = d3.geoOrthographic();
-        }
-        
+        this.yaw = d3.scaleLinear()
+        .domain([0, this.width])
+        .range([0, 360]);
+
+        this.projection = d3.geoEquirectangular();
+
         this.pathGenerator = d3.geoPath().projection(this.projection);
 
         this.zoom = d3.zoom()
@@ -40,7 +44,6 @@ export default class World {
 
         this.svg = d3.select("#WorldMap")
             .append("svg")
-            .attr('id','worldMapD3')
             .attr("viewBox", `0 0 ${this.width} ${this.height}`)
             .attr("max-width", "100%")
             .attr("width", "100%")
@@ -126,7 +129,3 @@ export default class World {
     }
 }
 
-export enum projections {
-    flat = 1,
-    sphere = 2
-}
