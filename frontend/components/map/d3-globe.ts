@@ -1,8 +1,7 @@
 import * as d3 from 'd3';
 import { feature } from 'topojson-client';
 import { MainTheme } from '../../styles/themes/MainTheme';
-import topoJSONdata from './topo.json';
-import tsvData from './tsvData';
+
 
 export default class WorldSphere {
 
@@ -21,59 +20,65 @@ export default class WorldSphere {
     private projection: d3.GeoProjection = d3.geoOrthographic();
     private path: d3.GeoPath<any, d3.GeoPermissibleObjects>;
 
+    private data: any;
+
     constructor() {
 
         this.svg = d3
             .select("#WorldMap")
             .append('svg')
-            .attr('width', this.width)
-            .attr('height', this.height);
+            .attr('id','worldMapD3')
+            .attr("viewBox", `0 0 ${this.width} ${this.height}`)
+            .attr("max-width", "100%")
+            .attr("width", "85%")
+            .attr("height", "85%");
 
         // Init projection stuff
         this.projection = d3.geoOrthographic();
         this.projection.scale();
         this.path = d3.geoPath().projection(this.projection);
 
+        this.svg
+            .append('path')
+            .attr('d', this.path({ type: "Sphere" }))
+            .attr("fill", MainTheme.colours.ocean)
+            .append('g');
 
         d3.json('https://gist.githubusercontent.com/mbostock/4090846/raw/d534aba169207548a8a3d670c9c2cc719ff05c47/world-110m.json')
             .then((worldData: any) => {
-                const data: any = feature(worldData, worldData.objects.countries);
+                const featureWorldData: any = feature(worldData, worldData.objects.countries);
 
-                this.svg.selectAll(".segment")
-                    .data(data.features)
+                this.data = this.svg.selectAll(".segment")
+                    .data(featureWorldData.features)
                     .enter().append("path")
                     .attr("class", "segment")
-                    .attr("d", this.path)
-                    .style("stroke", "#888")
-                    .style("stroke-width", "1px")
-                    .style("fill", (d, i) => '#e5e5e5')
-                    .style("opacity", ".6");
+                    .attr("d", this.path);
+
+                this.enableRotation();
             })
-
-
-
-        this.drawGraticule();
-        this.enableRotation();
-    }
-
-    private drawGraticule = () => {
-        // const graticule = d3.geoGraticule()
-        //     .step([10, 10]);
-
-        // this.svg.append("path")
-        //     .datum(graticule)
-        //     .attr("class", "graticule")
-        //     .attr("d", this.path)
-        //     .style("fill", "#fff")
-        //     .style("stroke", "#ccc");
     }
 
     private enableRotation = () => {
         d3.timer((elapsed) => {
             this.projection.rotate([this.config.speed * elapsed - 120, this.config.verticalTilt, this.config.horizontalTilt]);
-            this.svg.selectAll("path").attr("d", this.path);
+            this.svg.selectAll(".segment").attr("d", this.path);
         });
     }
 
-    render = () => { }
+    render(data: any, filter: string) {
+        if (!this.data) setTimeout(() => {
+            const { color1, color2, color3, color4, color5 } = MainTheme.colours.legend;
+
+            var colors = d3.scaleQuantize()
+                .domain([0, 100])
+                //@ts-ignore
+                .range([color1, color2, color3, color4, color5]);
+            console.log(this.data);
+
+            this.data
+                .style('fill', (d) => {
+                    return colors(Math.random() * (100));
+                })
+        }, 700);
+    }
 }
