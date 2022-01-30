@@ -5,12 +5,12 @@ import { LayersTool } from "../LayersTool";
 import { Legend } from "../Legend";
 import { SearchBar } from "../SearchBar";
 import Suggestions from "../Suggestions";
+import Tooltip from "../Tooltip";
 import WorldSphere from "./d3-globe";
 import World, { projections } from "./d3-map";
 
-
 const Map = () => {
-    const [projection, setProjection] = useState<projections>(projections.flat);    
+    const [projection, setProjection] = useState<projections>(projections.flat);
     const [filter, setFilter] = useState<string>(null);
     const [world, setWorld] = useState<any>(null);
     const [data, setData] = useState<ApiResponse>(null);
@@ -38,20 +38,38 @@ const Map = () => {
 
     const onSearch = (query: string) => {
         search(query)
-            .then(x => {setData(x); setFilter(x.filters[0])});
+            .then(x => { setData(x); setFilter(x.filters[0]) });
+    }
+
+    const overlays = () => {
+        const tools = <>
+            <SearchBar
+                onSearch={onSearch}
+            />
+            <LayersTool setProjection={setProjection} />
+            <Legend
+                filters={data ? data.filters : undefined}
+                setFilter={setFilter}
+            />
+            <Tooltip/>
+        </>
+
+        if (projection === projections.sphere) {
+            return <div>
+                <div className="stars"></div>
+                <div className="twinkling"></div>
+                <div className="clouds"></div>
+                {tools}
+            </div>
+        } else {
+            return tools;
+        }
     }
 
     return (
         <div>
             <WorldMapStyles id="WorldMap">
-                <SearchBar
-                    onSearch={onSearch}
-                />
-                <LayersTool setProjection={setProjection}/>
-                <Legend
-                    filters={data ? data.filters : undefined}
-                    setFilter={setFilter}
-                />
+                {overlays()}
             </WorldMapStyles>
             <Suggestions/>
         </div>
