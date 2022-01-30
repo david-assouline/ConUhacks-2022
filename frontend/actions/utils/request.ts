@@ -1,6 +1,4 @@
-const baseURL = "https://comp353.herokuapp.com";
-
-// const baseURL = "http://localhost:5000";
+const baseURL = "https://80e0-174-91-18-75.ngrok.io/v1/";
 
 export type Request = {
     body?: any,

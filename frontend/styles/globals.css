@@ -25,3 +25,7 @@ body, html {
 .table td, .table th {
   padding: 2px
 }
+
+.modal-content {
+  border-radius: 8px;
+}

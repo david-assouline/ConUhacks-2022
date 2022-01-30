@@ -34,8 +34,11 @@ export default class World {
     private tooltipTitle;
 
     constructor(projectionType: projections) {
-        this.projection = d3.geoNaturalEarth1();
-        // this.projection = d3.geoEquirectangular();
+        // this.projection = d3.geoNaturalEarth1();
+        this.projection = d3.geoEquirectangular();
+        this.projection = d3.geoMercator()
+                        .center([0, 0])
+                        .scale(100);
         this.pathGenerator = d3.geoPath().projection(this.projection);
 
         this.zoom = d3.zoom()
@@ -90,7 +93,7 @@ export default class World {
                 this.tooltip.style("display", "block");
                 if (this.data) {
                     const countryData = this.data.result.data[country.postal];
-                    this.tooltipTitle.html(`${country.name} ${emojis[country.postal]} ~ ${countryData ? this.nFormatter(countryData[this.filter], 0) : 0}`);
+                    this.tooltipTitle.html(`${country.name} ${emojis[country.postal]} ~ ${countryData ? countryData[this.filter] : 0}`);
                 } else {
                    this.tooltipTitle.html(`${country.name} ${emojis[country.postal]}`);
                 }
@@ -113,23 +116,6 @@ export default class World {
             d3.zoomIdentity,
             d3.zoomTransform(this.svg.node()).invert([this.width / 2, this.height / 2])
         );
-    }
-
-    private nFormatter = (num, digits) => {
-        const lookup = [
-          { value: 1, symbol: "" },
-          { value: 1e3, symbol: "k" },
-          { value: 1e6, symbol: "M" },
-          { value: 1e9, symbol: "G" },
-          { value: 1e12, symbol: "T" },
-          { value: 1e15, symbol: "P" },
-          { value: 1e18, symbol: "E" }
-        ];
-        const rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
-        var item = lookup.slice().reverse().find(function(item) {
-          return num >= item.value;
-        });
-        return item ? (num / item.value).toFixed(digits).replace(rx, "$1") + item.symbol : "0";
     }
 
     private zoomed = (event: any) => {

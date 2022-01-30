@@ -1,8 +1,8 @@
 import { DefaultTheme } from "styled-components";
 
-export const MainTheme: DefaultTheme = {
+export const DarkTheme: DefaultTheme = {
     colours: {
-        country: 'lightgreen',
+        country: 'blue',
         countryClick: 'red',
         hoverCountry: 'pink',
         borders: 'black',

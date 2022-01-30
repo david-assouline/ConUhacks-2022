@@ -13,7 +13,8 @@ declare module 'styled-components' {
             color2: string,
             color3: string,
             color4: string,
-            color5: string
+            color5: string,
+            noDataColor: string
           }
           toolOverlay: {
             backgroundColor: string,

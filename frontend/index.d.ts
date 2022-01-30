@@ -1,11 +1,16 @@
 type ApiResponse = {
-    data: ApiData,
-    filter: string[]
-    versions: number,
-    resultSuccess: boolean,
+    filters: string[]
     query: string,
+    version: string,
+    success: boolean,
     suggestions: string[],
-
+    result: {
+        data: ApiData,
+        count: {
+            min: number,
+            max: number
+        }
+    }
 }
 
 type ApiData = {
